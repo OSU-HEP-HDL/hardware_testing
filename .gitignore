@@ -3,3 +3,5 @@ pyrightconfig.json
 __pycache__/
 image.png
 testing/*
+DS_Store
+```
