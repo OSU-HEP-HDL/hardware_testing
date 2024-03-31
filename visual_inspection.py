@@ -25,6 +25,12 @@ def get_status(responses):
             status = "PASS"
     return status
 
+def get_ids():
+    # TODO implement qr scanning and id validation
+    mfr_id = input("Type the manufactuers ID: ")
+    atlas_id = input("Type the atals ID: ")
+    return mfr_id, atlas_id
+
 def main():
     responses = {}
     # dictionary to store responses
@@ -39,10 +45,11 @@ def main():
     status = get_status(responses)
     result = responses.copy()
     result["status"] = status
-    # mydb = client["visual_test"]
-    # mycol = mydb["inspections"]
-    # x = mycol.insert_one(result)
+    mfr_id, atlas_id = get_ids()
+    result["mfr_id"] = mfr_id
+    result["atlas_id"] = atlas_id
     data_enrty = client["visual_test"]["inspections"].insert_one(result)
+
 
 if __name__ == "__main__":
     main()

@@ -13,8 +13,6 @@ def authenticate_user_itkdb():
     if auth == False:
         print("\nFailed to authenticate user!\n")
     else:
-        user = client.get("getUser", json={"userIdentity": client.user.identity})
-        print("\nAuthenticated as " + user["firstName"] + ".\n")
         return client
 
 
