@@ -14,3 +14,14 @@ Now using the startup script will activate your environment and ensure that the 
 ```
 source setup.sh
 ```
+
+Create an environment file to store keys called ```.env```.
+It should have the format
+```
+ITKDB_ACCESS_CODE1="password1"
+ITKDB_ACCESS_CODE2="password2"
+
+USERNAME="mongodb_user"
+PASSWORD="mongodb_password"
+LOCAL_ADDRESS="mongodb_address:port"
+```
