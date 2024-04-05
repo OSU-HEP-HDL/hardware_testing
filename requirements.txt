@@ -3,4 +3,3 @@ openhtf
 pymongo
 numpy
 pandas
-pyside6

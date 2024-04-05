@@ -5,6 +5,7 @@ Tools for performing hardware tests and uploading to databases.
 It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
 
 To follow with this setup, create an environment called ```testing``` by running.
+(Some features of OpenHTF do not work in python>3.9.)
 ```
 virtualenv testing
 ```

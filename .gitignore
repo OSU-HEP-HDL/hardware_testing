@@ -2,6 +2,9 @@
 pyrightconfig.json
 __pycache__/
 image.png
+tesing
 testing/*
-DS_Store
-```
+.DS_Store
+upload_test.py
+qt_examples.py
+HTF_test.py

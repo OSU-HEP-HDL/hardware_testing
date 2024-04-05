@@ -1,4 +1,5 @@
 from db_utils import authenticate_user_mongodb
+import subprocess
 
 client = authenticate_user_mongodb()
 
@@ -21,6 +22,7 @@ def get_status(responses):
     for k, v in responses.items():
         if "yes" in v or "y" in v:
             status = "FAIL"
+            break
         else:
             status = "PASS"
     return status
@@ -48,6 +50,9 @@ def main():
     mfr_id, atlas_id = get_ids()
     result["mfr_id"] = mfr_id
     result["atlas_id"] = atlas_id
+    image_name = str(input("Type filename: "))
+    result["image_path"] = "afs/cern.ch/user/d/dallen/Desktop/" + image_name
+    subprocess.run(["scp", image_name, "dallen@lxplus.cern.ch:/afs/cern.ch/user/d/dallen/Desktop"])
     data_enrty = client["visual_test"]["inspections"].insert_one(result)
 
 
