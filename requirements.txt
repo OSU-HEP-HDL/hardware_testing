@@ -3,3 +3,4 @@ openhtf
 pymongo
 numpy
 pandas
+PyQt6
