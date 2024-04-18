@@ -1,12 +1,13 @@
 .env
 pyrightconfig.json
-__pycache__/
+__pycache__/*
+.webcache/*
+.DS_Store
 image.png
 tesing
 testing/*
-.DS_Store
-upload_test.py
-qt_examples.py
 HTF_test.py
 results/
 labels/
+buttons.py
+local_db.py
