@@ -1,0 +1,15 @@
+name: db
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  
+  - pymongo
+  - numpy
+  - pandas
+  - python=3.9
+  - pip
+  - pip:
+    - itkdb
+    - openhtf
+    - PyQt6

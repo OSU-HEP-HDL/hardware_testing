@@ -1,4 +1,3 @@
-from db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 import datetime
 import segno
 import json
@@ -107,6 +106,9 @@ def get_N2():
         try:
             selection_2 = input("\nInput Selection: ")
             n_modules = module_types[int(selection_2)]
+            if int(selection_1) == 0 and int(selection_2) == 2:
+                print("Error: You've selected BARREL and BOTH. Only RINGS are BOTH. Try again.")
+                raise ValueError
             break
         except (ValueError, IndexError):
             print("Invalid Input. Try again.")
@@ -145,68 +147,84 @@ def get_flavor():
 
     return flavor
 
-def format_number(num):
+def format_number():
     '''
     This ensures the last four digits of the serial number are in fact four digits when represented as a string
     '''
-    try:
-        num = int(num)
-    except ValueError:
-        return "Invalid input. Please provide a valid number."
+    answers = ["n","y","no","yes"]
+    nol = ["n","no"]
+    yesl = ['y',"yes"]
+    print("Are you entering a batch? (y or n)")
+    while True:
+        try:
+            answer = input("\nAnswer: ")
+            if answer not in answers:
+                raise ValueError
+            break
+        except ValueError:
+            print("Invalid answer. Only a y or n")
+    if answer in nol:
+        try:
+            print("Enter a number for the component (0 to 9999)")
+            number = input("\nInput Selection: ")
+            num = int(number)
+        except ValueError:
+            return "Invalid input. Please provide a valid number."
 
-    if 0 <= num <= 9999:
-        formatted_num = '{:04d}'.format(num)
-        return formatted_num
-    else:
-        return "Number out of range. Please provide a number between 1 and 9999."
+        if 0 <= num <= 9999:
+            formatted_num = '{:04d}'.format(num)
+            return formatted_num
+        else:
+            return "Number out of range. Please provide a number between 1 and 9999."
+    
+    if answer in yesl:
+        try:
+           print("Enter how many components to register (2 to 9999)")
+           number = input("\nInput Selection: ")
+           num = int(number)
+        except ValueError:
+           return "Invalid input. Please provide a valid number."
+        
+        ''' Need to add a check for existing components'''
+        comp_list = []
+        for i in range(num):
 
-def get_latest_serial(client,xxyy, production_status, N2, flavor): 
+            if 0 <= i <= 9999:
+                formatted_num = '{:04d}'.format(i)
+                comp_list.append(formatted_num)
+            else:
+                return "Number out of range. Please provide a number between 1 and 9999."
+        return comp_list
+
+def prepend(list, str):
+    # Using format()
+    str += '{0}'
+    list = [str.format(i) for i in list]
+    return(list)
+
+def get_latest_serial(xxyy, production_status, N2, flavor): 
     '''
     Checks data base for existing components with the same first 10 digits.
     Finds largest existing serial number and increments it by 1.
     Returns the new serial number.
     '''
     partial_serial = "20U" + str(xxyy) + str(production_status) + str(N2) + str(flavor)
-    # print(partial_serial)
-    project = xxyy[0]
-    subproject = xxyy[0:1]
-
-    search_filter = {
-        "project": project,
-        "subproject": subproject,
-        "pageInfo": {"pageSize": 32}
-    }
-
-    existing_components = client.get("listComponents", json=search_filter)
-    for i in existing_components:
-        print(i)
-    existing_serials = []
-    for component in existing_components:
-        if component["serialNumber"] is None:
-            pass
-        elif partial_serial in component["serialNumber"]:
-            existing_serials.append(component["serialNumber"])
-    latest_serial = 0
-    for serial in existing_serials:
-        if len(serial) != 14:
-            pass
-        else:
-            if latest_serial < int(serial[10:14]):
-                latest_serial = int(serial[10:14])
-            else:
-                pass
-    new_serial = format_number(latest_serial + 1)
-    return partial_serial + format_number(latest_serial)
-
-def get_data(itkdb_client):
+    latest_serial = format_number()
+    if isinstance(latest_serial,list):
+        serial = prepend(latest_serial,partial_serial)
+        return serial
+    else:
+        return partial_serial + latest_serial
+    
+def get_data():
     date = str(datetime.datetime.now())
     comp_selection = get_compoent_type()
     xxyy = get_code_and_function(comp_selection)
     production_status = get_production_status()
     N2 = get_N2()
     flavor = get_flavor()
-    atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor)
-
+    atlas_serial = get_latest_serial(xxyy, production_status, N2, flavor)
+    #print("Final ATLAS Serial Number(s): ", atlas_serial)
     return json.dumps({"date": date, "atlas_serial": atlas_serial})
 
 
@@ -221,10 +239,9 @@ def print_labels():
 
 
 def main():
-    itkdb_client = authenticate_user_itkdb()
-    mongodb_client = authenticate_user_mongodb()
-    meta_data = get_data(itkdb_client)
-    create_labels(meta_data)
+    meta_data = get_data()
+    print(meta_data)
+    #create_labels(meta_data)
     # print(meta_data)
 
 

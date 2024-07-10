@@ -1,6 +1,7 @@
-itkdb
-openhtf
 pymongo
 numpy
 pandas
+itkdb
+openhtf
 PyQt6
+segno
