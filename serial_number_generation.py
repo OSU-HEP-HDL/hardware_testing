@@ -180,8 +180,11 @@ def format_number():
     if answer in yesl:
         try:
            print("Enter how many components to register (2 to 9999)")
-           number = input("\nInput Selection: ")
+           number = input("\nTotal Amount: ")
            num = int(number)
+           print("Enter from which number to start from")
+           start_number = input("\nStart Number: ")
+           start_num = int(start_number)
         except ValueError:
            return "Invalid input. Please provide a valid number."
         
@@ -190,7 +193,7 @@ def format_number():
         for i in range(num):
 
             if 0 <= i <= 9999:
-                formatted_num = '{:04d}'.format(i)
+                formatted_num = '{:04d}'.format(start_num+i)
                 comp_list.append(formatted_num)
             else:
                 return "Number out of range. Please provide a number between 1 and 9999."
