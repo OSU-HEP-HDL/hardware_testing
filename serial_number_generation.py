@@ -132,7 +132,7 @@ def get_flavor():
     '''
     Prompts user to select the flavor of component.
     '''
-    print("Select Component Flavor.")
+    print("Select Component Flavor (N3).")
     flavor_options = [0, 1, 2, 3, 4]
     for k, v in enumerate(flavor_options):
         print(f"For {v}, press {k}")
