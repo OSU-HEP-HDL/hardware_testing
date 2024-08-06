@@ -122,7 +122,6 @@ def format_number(latest_serial,existing_serials):
     if answer in yesl:
         while True:
             try:
-                print("The latest serial number is:",latest_serial)
                 print("Enter how many components to register in a batch (2 to 9999)")
                 number = input("\nTotal Amount: ")
                 if 2<= int(number) <= 9999:
@@ -131,6 +130,7 @@ def format_number(latest_serial,existing_serials):
                 print("Invalid input. Please provide a valid number.")
         num = int(number)
         while True:
+            print("The latest serial number is:",latest_serial)
             print("Do you wish to start from the latest serial number position? (y or n)")
             ans = input("\nAnswer: ")
             try:
@@ -139,8 +139,16 @@ def format_number(latest_serial,existing_serials):
                     break
                 elif ans == "no" or ans == "n":
                     print("Starting from a different position, please enter starting position")
-                    start_number = input("\nStart Number: ")
-                    start_num = int(start_number)
+                    while True:    
+                        start_number = input("\nStart Number: ")
+                        start_num = int(start_number)
+                        try:
+                            for p in range(num):
+                                if '{:04d}'.format(start_num+p) in existing_serial_list:
+                                    raise ValueError
+                            break
+                        except ValueError:
+                            print("The number you entered already exists! Please enter a non-existing serial number.")
                     break
                 else:
                     raise ValueError
@@ -158,3 +166,62 @@ def format_number(latest_serial,existing_serials):
             else:
                 return "Number out of range. Please provide a number between 1 and 9999."
         return comp_list
+    
+def get_latest_serial(client,xxyy, production_status, N2, flavor): 
+    '''
+    Checks data base for existing components with the same first 10 digits.
+    Finds largest existing serial number and increments it by 1.
+    Returns the new serial number.
+    '''
+    partial_serial = "20U" + str(xxyy) + str(production_status) + str(N2) + str(flavor)
+    print("Partial Serial Number: ",partial_serial)
+    project = xxyy[0]
+    subproject = xxyy[0:2]
+
+    comp_type = get_type(xxyy,N2)
+    print("The component type you're entering is: ", comp_type)
+    print("Searching production database for this type...")
+    search_filter = {
+        "project": project,
+        "subproject": subproject,
+        "type": comp_type,
+        "pageInfo": {"pageSize": 32}
+    }
+    existing_components = client.get("listComponents", json=search_filter)
+    print("Total components of type", comp_type,"found is:",existing_components.total)
+
+    existing_osu_components = []
+    existing_components_flavor = []
+    for i in existing_components:
+        code = str(i["institution"]["code"])
+        if code == str("OSU"):
+            existing_osu_components.append(i)
+            if i["serialNumber"][9] == str(flavor):
+                 existing_components_flavor.append(i)
+    print("Total components of type ", comp_type," with flavor ", flavor, " is ",len(existing_components_flavor))
+
+    existing_serials = []
+    for component in existing_components_flavor:
+        if partial_serial in component["serialNumber"]:
+            existing_serials.append(component["serialNumber"])
+        elif component["serialNumber"] is None:
+            pass
+
+    latest_serial = 0
+    for serial in existing_serials:
+        if len(serial) != 14:
+            pass
+        else:
+            if latest_serial < int(serial[10:14]):
+                latest_serial = int(serial[10:14])
+            else:
+                pass
+    new_serial = format_number(latest_serial,existing_serials)
+    
+    if isinstance(new_serial,str):
+        print("New serial: ",partial_serial + new_serial )
+        return partial_serial + new_serial
+    else:
+        serial_list = prepend(new_serial,partial_serial)
+        print("new serial numbers: ", serial_list)
+        return serial_list

@@ -1,5 +1,5 @@
 from db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from production_module import get_type, format_number, prepend, create_labels
+from production_module import get_type, format_number, prepend, create_labels, get_latest_serial
 import datetime
 import segno
 import json
@@ -151,64 +151,6 @@ def get_flavor():
 
     return flavor
 
-def get_latest_serial(client,xxyy, production_status, N2, flavor): 
-    '''
-    Checks data base for existing components with the same first 10 digits.
-    Finds largest existing serial number and increments it by 1.
-    Returns the new serial number.
-    '''
-    partial_serial = "20U" + str(xxyy) + str(production_status) + str(N2) + str(flavor)
-    print("Partial Serial Number: ",partial_serial)
-    project = xxyy[0]
-    subproject = xxyy[0:2]
-
-    comp_type = get_type(xxyy,N2)
-    print("The component type you're entering is: ", comp_type)
-    print("Searching production database for this type...")
-    search_filter = {
-        "project": project,
-        "subproject": subproject,
-        "type": comp_type,
-        "pageInfo": {"pageSize": 32}
-    }
-    existing_components = client.get("listComponents", json=search_filter)
-    print("Total components of type", comp_type,"found is:",existing_components.total)
-
-    existing_osu_components = []
-    existing_components_flavor = []
-    for i in existing_components:
-        code = str(i["institution"]["code"])
-        if code == str("OSU"):
-            existing_osu_components.append(i)
-            if i["serialNumber"][9] == str(flavor):
-                 existing_components_flavor.append(i)
-    print("Total components of type ", comp_type," with flavor ", flavor, " is ",len(existing_components_flavor))
-
-    existing_serials = []
-    for component in existing_components_flavor:
-        if partial_serial in component["serialNumber"]:
-            existing_serials.append(component["serialNumber"])
-        elif component["serialNumber"] is None:
-            pass
-
-    latest_serial = 0
-    for serial in existing_serials:
-        if len(serial) != 14:
-            pass
-        else:
-            if latest_serial < int(serial[10:14]):
-                latest_serial = int(serial[10:14])
-            else:
-                pass
-    new_serial = format_number(latest_serial,existing_serials)
-    
-    if isinstance(new_serial,str):
-        print("New serial: ",partial_serial + new_serial )
-        return new_serial
-    else:
-        serial_list = prepend(new_serial,partial_serial)
-        print("new serial numbers: ", serial_list)
-        return serial_list
 
 def get_data(itkdb_client):
     date = str(datetime.datetime.now())
@@ -216,18 +158,61 @@ def get_data(itkdb_client):
     xxyy = get_code_and_function(comp_selection)
     production_status = get_production_status()
     N2 = get_N2()
+    comp_type = get_type(xxyy,N2)
     flavor = get_flavor()
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor)
 
-    return json.dumps({"date": date, "atlas_serial": atlas_serial})
+    return comp_type, atlas_serial #, json.dumps({"date": date, "atlas_serial": atlas_serial})
 
+def upload_component(client,component, serialNumber):
+    ''' This is for a single component upload'''
+    if isinstance(serialNumber,str):
+        ''' retrieve component template to save'''
+        project = serialNumber[3]
+        subproject = serialNumber[3:5]
+        comp_filter = {
+        "project": project,
+        "code": "IS_TYPE0"
+        }
+        component_template = client.get('generateComponentTypeDtoSample',json=comp_filter)
+        print(component_template)
+        print(subproject)
+        
+        print("\nState the purpose:")
+        purpose_list = ["Pre-Production", "Production","Dummy"]
+        for k, v in enumerate(purpose_list):
+            print(f"For {v}, press {k}")
+        purpose_selection = input("\nInput Selection: ")
+        purpose = purpose_list[int(purpose_selection)]
+        
+        #### ADD TYPE COMBINATION
 
+        flavor = serialNumber[9]
+        #### CHECK WHY SN IS NOT IN TEMPLATE
+        print("\nWhat is the vendor?")
+        vendor_list = ["Vector","vendor2"]
+        for k, v in enumerate(vendor_list):
+            print(f"For {v}, press {k}")
+        vendor_selection = input("\nInput Selection: ")
+        vendor = vendor_list[int(vendor_selection)]
+
+        new_component = {
+            **component_template,
+            "subproject": subproject,
+            "institution": "OSU",
+            "type": component,
+            "serialNumber": serialNumber,
+            "properties": {**component_template['properties'], "PURPOSE": purpose, "FLAVOR":flavor, "VENDOR": vendor}
+        }
+        print(new_component)
 
 
 def main():
     itkdb_client = authenticate_user_itkdb()
     #mongodb_client = authenticate_user_mongodb()
     meta_data = get_data(itkdb_client)
+    print(meta_data[0],meta_data[1])
+    upload_component(itkdb_client,meta_data[0],meta_data[1])
     #create_labels(meta_data)
     # print(meta_data)
 
