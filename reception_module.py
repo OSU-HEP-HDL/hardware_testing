@@ -20,6 +20,152 @@ def create_labels(meta_data):
 def print_labels():
     pass
 
+def get_component_type():
+    comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY", "PPO"]
+    print("Select a component type.\n")
+    for k, v in enumerate(comp_names):
+        print(f"For {v}, press {k}")
+
+    while True:
+        try:
+            comp_selection = comp_names[int(input("\nInput Selection: "))]
+            break
+        except (ValueError, IndexError):
+            print("Input was not a valid selection. Try again.")
+    print(f"Selected {comp_selection}\n")
+    return comp_selection
+
+
+def get_code_and_function(component):
+    '''
+    Based on component selection, this function returns the XXYY code for the serial number and the function attribute of the component.
+    TODO: finish the function attribute for all components
+    '''
+
+    if "PP0" in component:
+        #code_prefix = "PP"
+        code_suffix = "PG"
+    else:
+        code_prefix = "PI"
+
+        if "DATA" in component:
+            code_suffix = "DP"
+            function = "D"
+        elif "POWER" in component:
+            code_suffix = "PP"
+            function = "P"
+        elif "RING" in component:
+            code_suffix = "RF"
+            function = "R"
+        elif "Z-RAY" in component:
+            code_suffix = "PG"
+        elif "PPO" in component:
+            code_suffix = "PG"
+        else:
+            code_suffix = None
+    xxyy = str(code_prefix) + str(code_suffix)
+    return xxyy
+
+
+def get_production_status():
+    status_list = ["Pre-Production", "Production","Dummy"]
+    status_num = [0,1,9]
+    counter = 0
+    for k, v in enumerate(status_list):
+        if k == 2:
+            k = 9
+        print(f"For {v}, press {k}")
+    while True:
+        try:  
+            selection = input("\nInput Selection: ")
+            if int(selection) in status_num:
+                status = selection
+            else:
+                raise ValueError
+            break
+        
+        except(ValueError,IndexError):
+            print("Invalid Input. Try again.")
+            counter = counter +1
+            if counter %3 ==0:
+                print("")
+                for k, v in enumerate(status_list):
+                    if k == 2:
+                          k = 9
+                    print(f"For {v}, press {k}")
+
+
+    print(f"Selected {status}\n")
+    return selection
+
+def get_N2():
+    '''
+    N2 is a value in the serial number which is dependent on component placement and the number of modules on the component.
+    This gives the user a selection for both component placement and # modules.
+    Returns N2
+    '''
+    print("Select Component Placement.")
+    placement_options = ["BARREL", "RING"]
+    for k, v in enumerate(placement_options):
+        print(f"For {v}, press {k}")
+    while True:
+        try:
+            selection_1 = input("\nInput Selection: ")
+            placement = placement_options[int(selection_1)]
+            break
+        except (ValueError, IndexError):
+            print("Invalid Input. Try again.")
+    print(f"Selected {placement}\n")
+
+    print("Select Number of Modules")
+    module_types = ["TRIPLET", "QUAD", "BOTH"]
+    for k, v in enumerate(module_types):
+        print(f"For {v}, press {k}")
+    while True:
+        try:
+            selection_2 = input("\nInput Selection: ")
+            n_modules = module_types[int(selection_2)]
+            if int(selection_1) == 0 and int(selection_2) == 2:
+                print("Error: You've selected BARREL and BOTH. Only RINGS are BOTH. Try again.")
+                raise ValueError
+            break
+        except (ValueError, IndexError):
+            print("Invalid Input. Try again.")
+    print(f"Selected {n_modules}\n")
+
+    if int(selection_1) == 0:
+        if int(selection_2) == 0:
+            N2 = 0
+        elif int(selection_2) == 1:
+            N2 = 1
+    elif int(selection_1) == 1:
+        if int(selection_2) == 0:
+            N2 = 2
+        if int(selection_2) == 1:
+            N2 = 3
+        if int(selection_2) == 2:
+            N2 = 4
+    return N2
+
+def get_flavor():
+    '''
+    Prompts user to select the flavor of component.
+    '''
+    print("Select Component Flavor.")
+    flavor_options = [0, 1, 2, 3, 4]
+    for k, v in enumerate(flavor_options):
+        print(f"For {v}, press {k}")
+    while True:
+        try:
+            selection = input("\nInput Selection: ")
+            flavor = flavor_options[int(selection)]
+            break
+        except (ValueError, IndexError):
+            print("Invalid Input. Try again.")
+    print(f"Selected {flavor}\n")
+
+    return flavor
+
 
 def get_type(xxyy, N2):
     code = xxyy[2:4]
@@ -174,12 +320,12 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor):
     Returns the new serial number.
     '''
     partial_serial = "20U" + str(xxyy) + str(production_status) + str(N2) + str(flavor)
-    print("Partial Serial Number: ",partial_serial)
+    print("The partial serial number entered:",partial_serial)
     project = xxyy[0]
     subproject = xxyy[0:2]
 
     comp_type = get_type(xxyy,N2)
-    print("The component type you're entering is: ", comp_type)
+    print("The component type you're entering is:", comp_type)
     print("Searching production database for this type...")
     search_filter = {
         "project": project,
@@ -198,7 +344,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor):
             existing_osu_components.append(i)
             if i["serialNumber"][9] == str(flavor):
                  existing_components_flavor.append(i)
-    print("Total components of type ", comp_type," with flavor ", flavor, " is ",len(existing_components_flavor))
+    print("Total components of type", comp_type," with flavor", flavor, "is",len(existing_components_flavor))
 
     existing_serials = []
     for component in existing_components_flavor:
@@ -219,7 +365,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor):
     new_serial = format_number(latest_serial,existing_serials)
     
     if isinstance(new_serial,str):
-        print("New serial: ",partial_serial + new_serial )
+        print("New serial number:",partial_serial + new_serial )
         return partial_serial + new_serial
     else:
         serial_list = prepend(new_serial,partial_serial)
