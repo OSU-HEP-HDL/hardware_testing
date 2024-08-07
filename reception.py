@@ -16,8 +16,6 @@ def upload_component(client,component, serialNumber):
         "code": "IS_TYPE0"
         }
         component_template = client.get('generateComponentTypeDtoSample',json=comp_filter)
-        #print(component_template)
-        #print(subproject)
         
         purpose = serialNumber[7]
         type_combination = serialNumber[8]
@@ -39,7 +37,7 @@ def upload_component(client,component, serialNumber):
             "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor}
         }
 
-        print("You are uploading a new", component,"with SN", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
+        print("You are uploading a new", component,"with serial number", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
         answer = input("\nInput Selection: ")
         if answer == "y" or answer == "yes":
             print("Uploading new component...")
@@ -95,6 +93,7 @@ def upload_component(client,component, serialNumber):
         
 
 def get_data(itkdb_client):
+    register = True
     date = str(datetime.datetime.now())
     comp_selection = get_component_type()
     xxyy = get_code_and_function(comp_selection)
@@ -102,7 +101,7 @@ def get_data(itkdb_client):
     N2 = get_N2()
     comp_type = get_type(xxyy,N2)
     flavor = get_flavor()
-    atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor)
+    atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register)
 
     return comp_type, atlas_serial
 
