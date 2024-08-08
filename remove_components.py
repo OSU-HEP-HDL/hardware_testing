@@ -111,9 +111,10 @@ def get_data(itkdb_client):
     return comp_type, atlas_serial
 
 def get_serials_to_delete(client):
-    print("Would you like to manually enter the Serial Number of the component(s) to delete? (y or n)")
-    ans = input("\nYour answer: ")
+   
     while True:
+        print("Would you like to manually enter the Serial Number of the component(s) to delete? (y or n)")
+        ans = input("\nYour answer: ")
         try:
             if ans == "y" or ans == "yes":
                 while True:
@@ -148,14 +149,36 @@ def get_serials_to_delete(client):
                         print("Entered serial number(s) do not exist! Please enter valid serial number(s)")
                 break
             elif ans =="n" or ans == "no":
-                meta_data = get_data(client)
-                serial_number = meta_data[1]
-                if isinstance(serial_number,str):
-                    xxyy = str(serial_number[3:7])
-                    n2 = int(serial_number[8])
-                else:
-                    xxyy = str(serial_number[0][3:7])
-                    n2 = int(serial_number[0][8])
+                while True:
+                    try:
+                        meta_data = get_data(client)
+                        serial_number = meta_data[1]
+                        if isinstance(serial_number,str):
+                            xxyy = str(serial_number[3:7])
+                            n2 = int(serial_number[8])
+                            flavor = int(serial_number[9])
+                            partial_serial = serial_number[0:10]
+                        else:
+                            xxyy = str(serial_number[0][3:7])
+                            n2 = int(serial_number[0][8])
+                            flavor = int(serial_number[0][9])
+                            partial_serial = serial_number[0][0:10]
+
+                        existing_serials = get_existing_serials(client,partial_serial,xxyy,n2,flavor)
+                        if isinstance(serial_number,str):
+                            if serial_number not in existing_serials:
+                                raise ValueError
+                            else:
+                                print("Found existing serial number!")
+                                break
+                        else:
+                            for serial in serial_number:
+                                if serial not in existing_serials:
+                                    raise ValueError
+                            print("Found all existing serial numbers!")
+                            break
+                    except ValueError:
+                        print("Entered serial number(s) do not exist! Please enter valid serial number(s)")
                 break
             else:
                 raise ValueError
