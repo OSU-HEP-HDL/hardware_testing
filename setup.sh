@@ -3,7 +3,7 @@ mkdir ./results
 mkdir ./labels
 source testing/bin/activate
 
-pip install -r requirements.txt
+pip install -r requirements/requirements.txt
 
 
 read -p "Enter username: " USERNAME 

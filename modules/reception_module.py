@@ -178,7 +178,7 @@ def get_type(xxyy, N2):
     elif str(code) == "PP" and N2 == 1:
         comp_type = "L1_BARREL_POWER_FLEX"
     elif str(code) == "RF" and N2 == 2:
-        comp_type == "INTERMEDIATE_RING"
+        comp_type = "INTERMEDIATE_RING"
     elif str(code) == "RF" and N2 == 3:
         comp_type = "QUAD_RING_R1"
     elif str(code) == "RF" and N2 == 4:
@@ -401,7 +401,10 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register):
         }
     }
     existing_components = client.get("listComponents", json=search_filter)
-    print("Total components of type", comp_type,"found is:",existing_components.total)
+    if isinstance(existing_components,list):
+        print("Total components of type", comp_type,"found is:",len(existing_components))
+    else:
+        print("Total components of type", comp_type,"found is:",existing_components.total)
 
     existing_osu_components = []
     existing_components_flavor = []
