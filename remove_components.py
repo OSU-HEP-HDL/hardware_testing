@@ -3,8 +3,71 @@ from reception_module import get_type, get_latest_serial, get_code_and_function,
 import datetime
 import json
 
-def remove_component(comp_type, serialNumber):
-   print("hi")
+def remove_component(client, serialNumber):
+   
+    if isinstance(serialNumber,str):
+        search_filter = {
+           "component": serialNumber
+        }
+        component = client.get("getComponent", json=search_filter)
+        while True:
+            try:
+                print("Retrieved existing component with serial number", component["serialNumber"], ", Are you sure you want to delete it? (y or n)")
+                ans = input("\nAnswer: ")
+                print("What is your reason for deleting it?")
+                del_ans = input("\nReason: ")
+                if ans == "yes" or ans == "y":
+                    del_filter = {
+                        "component": serialNumber,
+                        "reason": del_ans
+                    }
+                    client.post("deleteComponent",json=del_filter)
+                    print("Component successfully deleted!")
+                    break
+                elif ans == "no" or ans == "n":
+                    print("Component not deleted... exiting.")
+                    break
+                else:
+                    raise ValueError
+            except ValueError:
+               print("Invalid input. Please try yes (y) or no (n).")
+    else:
+        print("Retrieving components...")
+        search_filter = []
+        for serial in serialNumber:
+            search_filter.append({
+                "component": serial
+            })
+        components = []
+        for filter in search_filter:
+            components.append(client.get("getComponent", json=filter))
+        print("Successfully retrieved all enquired components!")
+        while True:
+            try:
+                print("Are you sure you want to delete all enquired components? (y or n)")
+                ans = input("\nAnswer: ")
+                if ans == "yes" or ans == "y":
+                    print("What is the reason for deletion?")
+                    del_reason = input("\nReason: ")
+                    delete_filter = []
+                    for serial in serialNumber:
+                        delete_filter.append({
+                            "component": serial,
+                            "reason": del_reason
+                        }) 
+                    for filter in delete_filter:
+                        client.post("deleteComponent",json=filter)
+                    print("Successfully deleted all enquried components!")
+                    break
+                if ans == "no" or ans == "n":
+                    print("components not deleted... exiting")
+                    break
+                else:
+                    raise ValueError
+            except ValueError:
+                print("Invalid input. Please try yes (y) or no (n).")
+    return
+    
 
 def enter_serial_numbers():
    print("Are you deleting a batch? (y or n)")
@@ -48,7 +111,7 @@ def get_data(itkdb_client):
     return comp_type, atlas_serial
 
 def get_serials_to_delete(client):
-    print("Would you like to enter the Serial Number of the component(s) to delete? (y or n)")
+    print("Would you like to manually enter the Serial Number of the component(s) to delete? (y or n)")
     ans = input("\nYour answer: ")
     while True:
         try:
@@ -86,7 +149,6 @@ def get_serials_to_delete(client):
                 break
             elif ans =="n" or ans == "no":
                 meta_data = get_data(client)
-                comp_type = meta_data[0]
                 serial_number = meta_data[1]
                 if isinstance(serial_number,str):
                     xxyy = str(serial_number[3:7])
@@ -101,14 +163,12 @@ def get_serials_to_delete(client):
         except ValueError:
             print("Not a valid input. Please type yes (y) or no (n)")
 
-    return serial_number, xxyy, n2
+    return serial_number
     
 def main():
     itkdb_client = authenticate_user_itkdb()
-    serial_number, xxyy, n2 = get_serials_to_delete(itkdb_client)
-    comp_type = get_type(xxyy,n2)
-    print(comp_type)
-    #remove_component(comp_type,serial_number)
+    serial_number = get_serials_to_delete(itkdb_client)
+    remove_component(itkdb_client,serial_number)
 
 
 

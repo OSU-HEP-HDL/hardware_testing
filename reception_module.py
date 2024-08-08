@@ -383,16 +383,19 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register):
     partial_serial = "20U" + str(xxyy) + str(production_status) + str(N2) + str(flavor)
     print("The partial serial number entered:",partial_serial)
     project = xxyy[0]
-    subproject = xxyy[0:2]
+    subproject1 = xxyy[0:2]
+    subproject2 = xxyy[2:4]
 
     comp_type = get_type(xxyy,N2)
     print("The component type you're entering is:", comp_type)
     print("Searching production database for this type...")
     search_filter = {
-        "project": project,
-        "subproject": subproject,
-        "type": comp_type,
-        "pageInfo": {"pageSize": 32}
+        "filterMap":{
+            "project": project,
+            "subproject": [subproject1,subproject2],
+            "type": comp_type,
+            "institute": "OSU"
+        }
     }
     existing_components = client.get("listComponents", json=search_filter)
     print("Total components of type", comp_type,"found is:",existing_components.total)
@@ -436,5 +439,5 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register):
         if register == True:
             print("New serial numbers: ", serial_list)
         if register == False:
-            print("Serial numbers to detete: ", serial_list)
+            print("Serial numbers to delete: ", serial_list)
         return serial_list
