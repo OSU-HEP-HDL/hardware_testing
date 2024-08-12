@@ -1,4 +1,4 @@
-from db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 import datetime
 import segno
 import json
@@ -219,7 +219,61 @@ def get_type(xxyy, N2):
         raise ValueError("Your selection does not exist! Please retry.")
     return comp_type
 
+def get_comp_info(client,serialNumber):
+    comp_filter = {
+        "component": serialNumber
+    }
+    component = client.get("getComponent",json=comp_filter)
+    test_types = client.get("listTestTypes",json={"project": component["project"]["code"], "componentType":component["componentType"]["code"]})
+    test_list = []
+    for test_type in test_types:
+        test_list.append(test_type["code"])
+    meta_data = {
+        "serialNumber": component["serialNumber"],
+        "project": component["project"]["code"],
+        "user": component["user"],
+        "institution": component["institution"]["code"],
+        "componentType": component["componentType"]["code"],
+        "type": component["type"]["code"],
+        "testTypes": test_list
+    }
+    
+    return meta_data
+    
 
+def enter_serial_numbers(single=False):
+   if single == True:
+       print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
+       in_serial = input("\nSerial Number: ")
+       return in_serial
+   
+   print("Are you entering a batch? (y or n)")
+   answer = input("\nAnswer: ")
+   while True:
+        try:
+            if answer == "n" or answer == "no":
+                print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
+                in_serial = input("\nSerial Number: ")
+                return in_serial
+            elif answer == "y" or answer == "yes":
+                print("Please enter the partial serial. (20UXXYYN1N2N3)")
+                partial_serial = input("\nPartial serial number: ")
+                print("How many are you deleting?")
+                quantity = input("\nTotal amount to delete: ")
+                print("Starting from which number to delete from? (1 to 9999)")
+                start_num = input("\nStarting number: ")
+                num_list = []
+                for i in range(int(quantity)):
+                    if 0 <= i <= 9999:
+                        formatted_num = '{:04d}'.format(int(start_num)+i)
+                        num_list.append(formatted_num)
+                in_serials = prepend(num_list,partial_serial)
+                return in_serials
+            else:
+                raise ValueError
+        except ValueError:
+            print("Please enter a valid answer. Yes (y) or no (n)")
+        
 def format_number(latest_serial,existing_serials,register):
     '''
     This ensures the last four digits of the serial number are in fact four digits when represented as a string

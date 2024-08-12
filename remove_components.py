@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, prepend, get_existing_serials
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, prepend, get_existing_serials, enter_serial_numbers
 import datetime
 import json
 
@@ -68,34 +68,6 @@ def remove_component(client, serialNumber):
                 print("Invalid input. Please try yes (y) or no (n).")
     return
     
-
-def enter_serial_numbers():
-   print("Are you deleting a batch? (y or n)")
-   answer = input("\nAnswer: ")
-   while True:
-        try:
-            if answer == "n" or answer == "no":
-                print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
-                in_serial = input("\nSerial Number: ")
-                return in_serial
-            elif answer == "y" or answer == "yes":
-                print("Please enter the partial serial. (20UXXYYN1N2N3)")
-                partial_serial = input("\nPartial serial number: ")
-                print("How many are you deleting?")
-                quantity = input("\nTotal amount to delete: ")
-                print("Starting from which number to delete from? (1 to 9999)")
-                start_num = input("\nStarting number: ")
-                num_list = []
-                for i in range(int(quantity)):
-                    if 0 <= i <= 9999:
-                        formatted_num = '{:04d}'.format(int(start_num)+i)
-                        num_list.append(formatted_num)
-                in_serials = prepend(num_list,partial_serial)
-                return in_serials
-            else:
-                raise ValueError
-        except ValueError:
-            print("Please enter a valid answer. Yes (y) or no (n)")
 
 def get_data(itkdb_client):
     register = False
