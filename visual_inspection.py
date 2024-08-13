@@ -1,8 +1,12 @@
 from modules.db_utils import authenticate_user_itkdb
 from modules.reception_module import enter_serial_numbers,get_comp_info
-import datetime
-import json
+import itkdb
+import shutil
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument("images",nargs="*",help="Add visual inspection photos to upload to the production database")
+args = vars(parser.parse_args())
 
 def get_reception_template(client,meta_data):
    ind=0
@@ -27,11 +31,11 @@ def upload_reception_results(client,meta_data,template):
       runNumber = str(len(component["tests"]) + 1)
   else:
       for x in component["tests"]:
-         print(x['testRuns'])
+         #print(x['testRuns'])
          if x['code'] == "VISUAL_INSPECTION":
             runNumber = len(x["testRuns"])
       runNumber = str(runNumber + 1)
-      print(runNumber)
+      #print(runNumber)
 
   while True:
      try:
@@ -92,14 +96,52 @@ def upload_reception_results(client,meta_data,template):
                    'results':{'DEFECT_TYPE': defect}
                    
   }
-  print(test_results)
+
   print("You are about to upload test results for the Visual Inspection test, are you sure? (y or n)")
   inp = input("\n")
   if inp == "y" or inp == "yes":
      client.post("uploadTestRunResults",json = test_results)
+     print("New test run successfully uploaded!")
   else:
      print("Results not posted. Exiting")
+   
     
+
+def upload_attachments(client,images,meta_data):
+   component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
+
+   for x in component["tests"]:
+      if x['code'] == "VISUAL_INSPECTION":
+         numInsp = len(x["testRuns"])
+         testRun = x["testRuns"]
+         
+   image_list = []
+   for image in images["images"]:
+      shutil.copy(image,itkdb.data)
+      image_list.append(itkdb.data / image)
+
+   data_list = []
+   for img in image_list:
+      data_list.append({
+         "testRun": testRun[numInsp-1]["id"],
+         "title": "Visual Inpection photos",
+         "description": "Photos of the visual inspection test",
+         "type": "file",
+         "url": img
+      })
+
+   attachment_list = []
+   for img in image_list:
+      attachment_list.append({"data": (img.name, img.open("rb"), "image/jpg")})
+
+   print("You are about to upload",len(image_list), "images to the visual inspection test with run number",numInsp,", do you want to continue? (y or n)")
+   ans = input("Answer: ")
+   if ans == "y" or "yes":
+      for data, attachment in zip(data_list, attachment_list):
+         client.post("createTestRunAttachment",data=data,files=attachment)
+      print("Attachment(s) successfully uploaded!")
+   else:
+      print("Not uploading photos. Exiting")
 
 def main():
     itkdb_client = authenticate_user_itkdb()
@@ -109,7 +151,10 @@ def main():
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_reception_template(itkdb_client,meta_data)
     upload_reception_results(itkdb_client,meta_data,template)
-    #Upload photos / attachments
+    if args != 0:
+      print("Image arguements included. Starting attachment upload.")
+      upload_attachments(itkdb_client,args,meta_data)
+
 
 if __name__ == '__main__':
   main()
