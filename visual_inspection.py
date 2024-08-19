@@ -103,8 +103,9 @@ def upload_reception_results(client,meta_data,template):
      client.post("uploadTestRunResults",json = test_results)
      print("New test run successfully uploaded!")
   else:
-     print("Results not posted. Exiting")
+     print("Results not posted!")
    
+  return test_results
     
 
 def upload_attachments(client,images,meta_data):
@@ -143,6 +144,26 @@ def upload_attachments(client,images,meta_data):
    else:
       print("Not uploading photos. Exiting")
 
+def upload_results_locally(client,results,serial_number):
+   print("Uploading Visual Inspection results locally...")
+   db = client["local"]["itk_testing"]
+   try:
+      if db.find_one({"_id": serial_number}) is None:
+         raise ValueError
+      else:
+         print("or here?")
+         result = {"$set":{
+                     "tests":{
+                        "VISUAL_INSPECTION": results
+               }
+            }
+         }
+         db.update_one({"_id": serial_number},result)
+         print("Uploaded results locally!")
+   except IndexError:
+      print("Component with serial number",serial_number,"doesn't exist locally!")
+      
+   
 def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
@@ -150,10 +171,12 @@ def main():
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_reception_template(itkdb_client,meta_data)
-    upload_reception_results(itkdb_client,meta_data,template)
-    if args != 0:
+    results = upload_reception_results(itkdb_client,meta_data,template)
+
+    if args["images"] is None:
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data)
+    upload_results_locally(mongodb_client,results,serial_number)
 
 
 if __name__ == '__main__':

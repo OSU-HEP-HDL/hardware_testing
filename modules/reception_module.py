@@ -9,14 +9,14 @@ def prepend(list, str):
     list = [str.format(i) for i in list]
     return(list)
 
-
+## NOT USED
 def create_labels(meta_data):
     qr_filename = str(json.loads(meta_data)["atlas_serial"]) + ".png"
     qrcode = segno.make_qr(meta_data)
 
     qrcode.save("labels/"+qr_filename)
 
-
+## NOT USED
 def print_labels():
     pass
 
@@ -243,13 +243,14 @@ def get_comp_info(client,serialNumber):
 
 def enter_serial_numbers(single=False):
    if single == True:
-       print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
+       print("Enter a single serial number. (20UXXYYN1N2N3nnnn)")
        in_serial = input("\nSerial Number: ")
        return in_serial
    
-   print("Are you entering a batch? (y or n)")
-   answer = input("\nAnswer: ")
+   
    while True:
+        print("Are you entering a batch? (y or n)")
+        answer = input("\nAnswer: ")
         try:
             if answer == "n" or answer == "no":
                 print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
