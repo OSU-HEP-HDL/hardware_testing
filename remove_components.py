@@ -68,6 +68,30 @@ def remove_component(client, serialNumber):
                 print("Invalid input. Please try yes (y) or no (n).")
     return
     
+def remove_component_locally(client,serialNumber):
+    db = client["local"]["itk_testing"]
+    if isinstance(serialNumber,str):
+        print("Deleting component locally...")
+        try:
+            if db.find_one({"_id": serialNumber})!= None:
+                db.delete_one({"_id":serialNumber})
+                print("Component deleted successfully!")
+            else:
+                raise ValueError
+        except ValueError:
+            print("Component with serial number",serialNumber,"not found locally!")
+
+    else:
+        print("Deleting component batch locally...")
+        for serial in serialNumber:
+            try:
+                if db.find_one({"_id": serial})!= None:
+                    db.delete_one({"_id":serial})
+                else:
+                    raise ValueError
+            except ValueError:
+                print("Component with serial number",serial,"not found locally!")
+        print("Component batch deleted locally successfully!")
 
 def get_data(itkdb_client):
     register = False
@@ -162,8 +186,11 @@ def get_serials_to_delete(client):
     
 def main():
     itkdb_client = authenticate_user_itkdb()
+    mongodb_client = authenticate_user_mongodb()
     serial_number = get_serials_to_delete(itkdb_client)
     remove_component(itkdb_client,serial_number)
+    remove_component_locally(mongodb_client,serial_number)
+
 
 
 
