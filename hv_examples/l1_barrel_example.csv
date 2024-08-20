@@ -1,0 +1,283 @@
+ Title:, Electrical Test Report -Final
+ Page Number:, _PAGE_
+
+ Title:, Test Results Provided By
+
+ Operator:, Test Engineer
+ S/N:, retest 4-7
+ Final Test Result:, Failed
+ Run Number:, 9
+ Cable Number:, 1
+ Test Date:, 5/30/2024
+ Test Time:, 9:03:13 PM
+ Retry Count:, 1
+ Test Name:, L1_Barrel_Power_F1_Connectivity
+ Lot ID:, 
+
+ Title:, Test Parameters
+
+ Wire Resistance:, 10.0 Ohm
+ Shorts Test Resistance:, 100 kOhm
+
+ Title:, HV Test Parameters
+
+ DW Voltage:, Off
+ IR Voltage:, Off
+
+ Title:, Nets Hipot Status
+
+ Name, Test Method, Measured IR, DW Total Current, DW Real Current
+
+ Title:, Error Details
+
+ #, Type, From Points, To Points, Expected 1, Measured 1, Expected 2, Measured 2, Instruction Detail
+ 1, , J1-010,"J1-012, J3-007", , , , , Net NC: SHORT J1-010 to J1-012 J3-007
+ 2, , J1-014,"J1-016, J1-028, J1-030, J1-032, J1-046", , , , , Net NC: SHORT J1-014 to J1-016 J1-028 J1-030 J1-032 J1-046 J1-048 J7-005 J7-007 J7-059 J7-061 J7-063
+ 2, , ,"J1-048, J7-005, J7-007, J7-059, J7-061", , , , , 
+ 2, , , J7-063, , , , , 
+ 3, , J1-018,"J1-020, J5-031", , , , , Net NC: SHORT J1-018 to J1-020 J5-031
+ 4, WIRE, J1-020, J1-022, , , , , Net Net2: OPEN J1-020 to J1-022
+ 5, ,"J1-024, J1-034, J1-036, J1-038, J1-045", , , , , , MISWIRE to J1-024 J1-034 J1-036 J1-038 J1-045 J1-047 J1-049 J1-050 J1-051 J1-052 J1-053 J5-031
+ 5, ,"J1-047, J1-049, J1-050, J1-051, J1-052", , , , , , 
+ 5, ,"J1-053, J5-031", , , , , , 
+ 6, WIRE, J1-016, J1-026, , , , , Net Net1: OPEN J1-016 to J1-026
+ 7, ,"J1-028, J1-030, J1-032, J1-046, J1-048", , , , , , MISWIRE to J1-028 J1-030 J1-032 J1-046 J1-048 J1-055 J3-026 J5-013 J7-002 J7-005 J7-007 J7-009 J7-038 J7-039 J7-041 J7-059 J7-06
+ 7, ,"J1-055, J3-026, J5-013, J7-002, J7-005", , , , , , 
+ 7, ,"J7-007, J7-009, J7-038, J7-039, J7-041", , , , , , 
+ 7, ,"J7-059, J7-061, J7-063", , , , , , 
+ 8, , J1-040,"J1-058, J3-004, J5-001, J7-057", , , , , Net NC: SHORT J1-040 to J1-058 J3-004 J5-001 J7-057
+ 9, , J1-042, J5-027, , , , , Net NC: SHORT J1-042 to J5-027
+ 10, , J1-044, J5-030, , , , , Net NC: SHORT J1-044 to J5-030
+ 11, , J1-054, J5-022, , , , , Net NC: SHORT J1-054 to J5-022
+ 12, , J1-056, J5-006, , , , , Net NC: SHORT J1-056 to J5-006
+ 13, , J1-057,"J1-059, J1-060, J1-062, J1-064, J3-053", , , , , Net NC: SHORT J1-057 to J1-059 J1-060 J1-062 J1-064 J3-053 J3-054 J3-055 J3-056 J3-057 J3-058 J3-059 J3-061 J5-051 J5-053 J5-054
+ 13, , ,"J3-054, J3-055, J3-056, J3-057, J3-058", , , , , 
+ 13, , ,"J3-059, J3-061, J5-051, J5-053, J5-054", , , , , 
+ 13, , ,"J5-055, J5-056, J5-057, J5-058, J5-059", , , , , 
+ 13, , ,"J5-060, J5-062, J5-064", , , , , 
+ 14, , J1-061,"J1-063, J5-014", , , , , Net NC: SHORT J1-061 to J1-063 J5-014
+ 15, , J3-001,"J3-002, J3-003, J3-005, J3-006, J3-009", , , , , Net NC: SHORT J3-001 to J3-002 J3-003 J3-005 J3-006 J3-009 J3-010 J3-011 J3-012 J3-013 J3-014 J3-016 J3-017 J3-018 J3-019 J3-020
+ 15, , ,"J3-010, J3-011, J3-012, J3-013, J3-014", , , , , 
+ 15, , ,"J3-016, J3-017, J3-018, J3-019, J3-020", , , , , 
+ 15, , ,"J3-021, J3-022, J3-023, J3-024, J3-025", , , , , 
+ 15, , ,"J3-028, J3-029, J3-032, J3-033, J3-036", , , , , 
+ 15, , ,"J3-037, J3-038, J3-039, J3-040, J3-041", , , , , 
+ 15, , ,"J3-042, J3-044, J3-045, J3-047, J3-048", , , , , 
+ 15, , ,"J3-049, J3-050, J3-051, J3-052, J5-002", , , , , 
+ 15, , ,"J5-003, J5-004, J5-007, J5-008, J5-009", , , , , 
+ 15, , ,"J5-010, J5-011, J5-012, J5-015, J5-016", , , , , 
+ 15, , ,"J5-017, J5-018, J5-019, J5-020, J5-021", , , , , 
+ 15, , ,"J5-023, J5-024, J5-025, J5-026, J5-028", , , , , 
+ 15, , ,"J5-029, J5-032, J5-033, J5-034, J5-035", , , , , 
+ 15, , ,"J5-036, J5-037, J5-040, J5-041, J5-042", , , , , 
+ 15, , ,"J5-044, J5-045, J5-046, J5-047, J5-048", , , , , 
+ 15, , ,"J5-049, J5-050, J5-052, J7-040, J7-042", , , , , 
+ 15, , ,"J7-044, J7-048, J7-050, J7-052", , , , , 
+ 16, , J3-008,"J5-005, J7-022, J7-025, J7-058", , , , , Net NC: SHORT J3-008 to J5-005 J7-022 J7-025 J7-058
+ 17, WIRE, J3-015, J3-025, , , , , Net Net3: OPEN J3-015 to J3-025
+ 18, ,"J3-028, J3-029, J3-032, J3-033, J3-036", , , , , , MISWIRE to J3-028 J3-029 J3-032 J3-033 J3-036 J3-037 J3-038 J3-039 J3-040 J3-041 J3-042 J3-044 J3-045 J3-047 J3-048 J3-049 J3-05
+ 18, ,"J3-037, J3-038, J3-039, J3-040, J3-041", , , , , , 
+ 18, ,"J3-042, J3-044, J3-045, J3-047, J3-048", , , , , , 
+ 18, ,"J3-049, J3-050, J3-051, J3-052, J5-002", , , , , , 
+ 18, ,"J5-003, J5-004, J5-007, J5-008, J5-009", , , , , , 
+ 18, ,"J5-010, J5-011, J5-012, J5-015, J5-016", , , , , , 
+ 18, ,"J5-017, J5-018, J5-019, J5-020, J5-021", , , , , , 
+ 18, ,"J5-023, J5-024, J5-025, J5-026, J5-028", , , , , , 
+ 18, ,"J5-029, J5-032, J5-033, J5-034, J5-035", , , , , , 
+ 18, ,"J5-036, J5-037, J5-040, J5-041, J5-042", , , , , , 
+ 18, ,"J5-044, J5-045, J5-046, J5-047, J5-048", , , , , , 
+ 18, ,"J5-049, J5-050, J5-052, J7-033, J7-040", , , , , , 
+ 18, ,"J7-042, J7-044, J7-048, J7-050, J7-052", , , , , , 
+ 18, , , , , , , , 
+ 19, , J3-027, J7-055, , , , , Net NC: SHORT J3-027 to J7-055
+ 20, , J3-030, J7-021, , , , , Net NC: SHORT J3-030 to J7-021
+ 21, , J3-031, J7-020, , , , , Net NC: SHORT J3-031 to J7-020
+ 22, , J3-034,"J3-063, J3-064", , , , , Net NC: SHORT J3-034 to J3-063 J3-064
+ 23, , J3-035, J7-054, , , , , Net NC: SHORT J3-035 to J7-054
+ 24, , J3-043, J7-056, , , , , Net NC: SHORT J3-043 to J7-056
+ 25, , J3-046, J7-032, , , , , Net NC: SHORT J3-046 to J7-032
+ 26, , J3-060,"J3-062, J7-011, J7-013, J7-015, J7-017", , , , , Net NC: SHORT J3-060 to J3-062 J7-011 J7-013 J7-015 J7-017 J7-019 J7-027 J7-029 J7-031 J7-035 J7-037
+ 26, , ,"J7-019, J7-027, J7-029, J7-031, J7-035", , , , , 
+ 26, , , J7-037, , , , , 
+ 27, , J5-038, J7-023, , , , , Net NC: SHORT J5-038 to J7-023
+ 28, , J5-039, J7-018, , , , , Net NC: SHORT J5-039 to J7-018
+ 29, , J5-043,"J5-061, J5-063", , , , , Net NC: SHORT J5-043 to J5-061 J5-063
+ 30, , J7-001,"J7-003, J7-043, J7-045, J7-047, J7-049", , , , , Net NC: SHORT J7-001 to J7-003 J7-043 J7-045 J7-047 J7-049 J7-051 J7-053 J7-060 J7-062 J7-064
+ 30, , ,"J7-051, J7-053, J7-060, J7-062, J7-064", , , , , 
+ 30, , , , , , , , 
+ 31, , J7-004,"J7-006, J7-008, J7-010, J7-012, J7-014", , , , , Net NC: SHORT J7-004 to J7-006 J7-008 J7-010 J7-012 J7-014 J7-016 J7-024 J7-026 J7-028 J7-030 J7-034 J7-036
+ 31, , ,"J7-016, J7-024, J7-026, J7-028, J7-030", , , , , 
+ 31, , ,"J7-034, J7-036", , , , , 
+ 32, WIRE, J11-010,"J11-012, J13-007, J13-031", , , , , Net Net5: OPEN J11-010 to J11-012 J13-007 J13-031
+ 33, WIRE, J11-014,"J11-016, J11-028, J11-030, J11-032", , , , , Net Net6: OPEN J11-014 to J11-016 J11-028 J11-030 J11-032
+ 34, WIRE, J11-018,"J11-020, J15-031", , , , , Net Net7: OPEN J11-018 to J11-020 J15-031
+ 35, WIRE, J11-022,"J11-024, J11-034, J11-036, J11-045, J11-047", , , , , Net Net8: OPEN J11-022 to J11-024 J11-034 J11-036 J11-045 J11-047 J11-049 J11-051 J11-052
+ 35, , ,"J11-049, J11-051, J11-052", , , , , 
+ 36, WIRE, J11-026,"J11-055, J13-026, J15-013", , , , , Net Net9: OPEN J11-026 to J11-055 J13-026 J15-013
+ 37, WIRE, J11-056, J15-006, , , , , Net Net10: OPEN J11-056 to J15-006
+ 38, WIRE, J11-057,"J11-059, J11-062, J13-053, J13-054, J13-055", , , , , Net Net11: OPEN J11-057 to J11-059 J11-062 J13-053 J13-054 J13-055 J13-056 J13-057 J13-058 J13-059 J13-061 J15-051 J15-053 J15-0
+ 38, , ,"J13-056, J13-057, J13-058, J13-059, J13-061", , , , , 
+ 38, , ,"J15-051, J15-053, J15-054, J15-055, J15-056", , , , , 
+ 38, , ,"J15-057, J15-058, J15-059, J15-060, J15-062", , , , , 
+ 38, , , J15-064, , , , , 
+ 39, WIRE, J11-058,"J13-004, J15-001", , , , , Net Net12: OPEN J11-058 to J13-004 J15-001
+ 40, WIRE, J11-061,"J11-063, J15-014", , , , , Net Net13: OPEN J11-061 to J11-063 J15-014
+ 41, WIRE, J13-001,"J13-002, J13-003, J13-005, J13-006, J13-009", , , , , Net Net14: OPEN J13-001 to J13-002 J13-003 J13-005 J13-006 J13-009 J13-010 J13-011 J13-012 J13-013 J13-014 J13-016 J13-017 J13-0
+ 41, , ,"J13-010, J13-011, J13-012, J13-013, J13-014", , , , , 
+ 41, , ,"J13-016, J13-017, J13-018, J13-019, J13-020", , , , , 
+ 41, , ,"J13-021, J13-022, J13-023, J13-024, J13-025", , , , , 
+ 41, , ,"J13-028, J13-029, J13-032, J13-033, J13-036", , , , , 
+ 41, , ,"J13-037, J13-038, J13-039, J13-040, J13-041", , , , , 
+ 41, , ,"J13-042, J13-044, J13-045, J13-047, J13-048", , , , , 
+ 41, , ,"J13-049, J13-050, J13-051, J13-052, J15-002", , , , , 
+ 41, , ,"J15-003, J15-004, J15-007, J15-008, J15-009", , , , , 
+ 41, , ,"J15-010, J15-011, J15-012, J15-015, J15-016", , , , , 
+ 41, , ,"J15-017, J15-018, J15-019, J15-020, J15-021", , , , , 
+ 41, , ,"J15-023, J15-024, J15-025, J15-026, J15-028", , , , , 
+ 41, , ,"J15-029, J15-032, J15-033, J15-034, J15-035", , , , , 
+ 41, , ,"J15-036, J15-037, J15-040, J15-041, J15-042", , , , , 
+ 41, , ,"J15-044, J15-045, J15-046, J15-047, J15-048", , , , , 
+ 41, , ,"J15-049, J15-050, J15-052", , , , , 
+ 42, WIRE, J13-008, J15-005, , , , , Net Net15: OPEN J13-008 to J15-005
+ 43, WIRE, J13-034,"J13-063, J13-064", , , , , Net Net16: OPEN J13-034 to J13-063 J13-064
+ 44, WIRE, J13-060, J13-062, , , , , Net Net17: OPEN J13-060 to J13-062
+ 45, WIRE, J15-043,"J15-061, J15-063", , , , , Net Net18: OPEN J15-043 to J15-061 J15-063
+
+ Title:, Measured Values
+
+ #, Instruction Type, From Points, To Points, Value Measured, Value Expected, Measured Detail
+ 1, WIRE, J1-016, J1-026, Not tested, 10.0 Ohm, Not tested
+ 2, WIRE, J1-020, J1-022, Not tested, 10.0 Ohm, Not tested
+ 3, WIRE, J3-015, J3-025, Not tested, 10.0 Ohm, Not tested
+ 4, WIRE, J3-019, J3-021, Not tested, 10.0 Ohm, Not tested
+ 5, WIRE, J11-010, J11-012, Not tested, 10.0 Ohm, Not tested
+ 6, WIRE, J11-012, J13-007, Not tested, 10.0 Ohm, Not tested
+ 7, WIRE, J13-007, J13-031, Not tested, 10.0 Ohm, Not tested
+ 8, WIRE, J11-014, J11-016, Not tested, 10.0 Ohm, Not tested
+ 9, WIRE, J11-016, J11-028, Not tested, 10.0 Ohm, Not tested
+ 10, WIRE, J11-028, J11-030, Not tested, 10.0 Ohm, Not tested
+ 11, WIRE, J11-030, J11-032, Not tested, 10.0 Ohm, Not tested
+ 12, WIRE, J11-018, J11-020, Not tested, 10.0 Ohm, Not tested
+ 13, WIRE, J11-020, J15-031, Not tested, 10.0 Ohm, Not tested
+ 14, WIRE, J11-022, J11-024, Not tested, 10.0 Ohm, Not tested
+ 15, WIRE, J11-024, J11-034, Not tested, 10.0 Ohm, Not tested
+ 16, WIRE, J11-034, J11-036, Not tested, 10.0 Ohm, Not tested
+ 17, WIRE, J11-036, J11-045, Not tested, 10.0 Ohm, Not tested
+ 18, WIRE, J11-045, J11-047, Not tested, 10.0 Ohm, Not tested
+ 19, WIRE, J11-047, J11-049, Not tested, 10.0 Ohm, Not tested
+ 20, WIRE, J11-049, J11-051, Not tested, 10.0 Ohm, Not tested
+ 21, WIRE, J11-051, J11-052, Not tested, 10.0 Ohm, Not tested
+ 22, WIRE, J11-026, J11-055, Not tested, 10.0 Ohm, Not tested
+ 23, WIRE, J11-055, J13-026, Not tested, 10.0 Ohm, Not tested
+ 24, WIRE, J13-026, J15-013, Not tested, 10.0 Ohm, Not tested
+ 25, WIRE, J11-056, J15-006, Not tested, 10.0 Ohm, Not tested
+ 26, WIRE, J11-057, J11-059, Not tested, 10.0 Ohm, Not tested
+ 27, WIRE, J11-059, J11-062, Not tested, 10.0 Ohm, Not tested
+ 28, WIRE, J11-062, J13-053, Not tested, 10.0 Ohm, Not tested
+ 29, WIRE, J13-053, J13-054, Not tested, 10.0 Ohm, Not tested
+ 30, WIRE, J13-054, J13-055, Not tested, 10.0 Ohm, Not tested
+ 31, WIRE, J13-055, J13-056, Not tested, 10.0 Ohm, Not tested
+ 32, WIRE, J13-056, J13-057, Not tested, 10.0 Ohm, Not tested
+ 33, WIRE, J13-057, J13-058, Not tested, 10.0 Ohm, Not tested
+ 34, WIRE, J13-058, J13-059, Not tested, 10.0 Ohm, Not tested
+ 35, WIRE, J13-059, J13-061, Not tested, 10.0 Ohm, Not tested
+ 36, WIRE, J13-061, J15-051, Not tested, 10.0 Ohm, Not tested
+ 37, WIRE, J15-051, J15-053, Not tested, 10.0 Ohm, Not tested
+ 38, WIRE, J15-053, J15-054, Not tested, 10.0 Ohm, Not tested
+ 39, WIRE, J15-054, J15-055, Not tested, 10.0 Ohm, Not tested
+ 40, WIRE, J15-055, J15-056, Not tested, 10.0 Ohm, Not tested
+ 41, WIRE, J15-056, J15-057, Not tested, 10.0 Ohm, Not tested
+ 42, WIRE, J15-057, J15-058, Not tested, 10.0 Ohm, Not tested
+ 43, WIRE, J15-058, J15-059, Not tested, 10.0 Ohm, Not tested
+ 44, WIRE, J15-059, J15-060, Not tested, 10.0 Ohm, Not tested
+ 45, WIRE, J15-060, J15-062, Not tested, 10.0 Ohm, Not tested
+ 46, WIRE, J15-062, J15-064, Not tested, 10.0 Ohm, Not tested
+ 47, WIRE, J11-058, J13-004, Not tested, 10.0 Ohm, Not tested
+ 48, WIRE, J13-004, J15-001, Not tested, 10.0 Ohm, Not tested
+ 49, WIRE, J11-061, J11-063, Not tested, 10.0 Ohm, Not tested
+ 50, WIRE, J11-063, J15-014, Not tested, 10.0 Ohm, Not tested
+ 51, WIRE, J13-001, J13-002, Not tested, 10.0 Ohm, Not tested
+ 52, WIRE, J13-002, J13-003, Not tested, 10.0 Ohm, Not tested
+ 53, WIRE, J13-003, J13-005, Not tested, 10.0 Ohm, Not tested
+ 54, WIRE, J13-005, J13-006, Not tested, 10.0 Ohm, Not tested
+ 55, WIRE, J13-006, J13-009, Not tested, 10.0 Ohm, Not tested
+ 56, WIRE, J13-009, J13-010, Not tested, 10.0 Ohm, Not tested
+ 57, WIRE, J13-010, J13-011, Not tested, 10.0 Ohm, Not tested
+ 58, WIRE, J13-011, J13-012, Not tested, 10.0 Ohm, Not tested
+ 59, WIRE, J13-012, J13-013, Not tested, 10.0 Ohm, Not tested
+ 60, WIRE, J13-013, J13-014, Not tested, 10.0 Ohm, Not tested
+ 61, WIRE, J13-014, J13-016, Not tested, 10.0 Ohm, Not tested
+ 62, WIRE, J13-016, J13-017, Not tested, 10.0 Ohm, Not tested
+ 63, WIRE, J13-017, J13-018, Not tested, 10.0 Ohm, Not tested
+ 64, WIRE, J13-018, J13-019, Not tested, 10.0 Ohm, Not tested
+ 65, WIRE, J13-019, J13-020, Not tested, 10.0 Ohm, Not tested
+ 66, WIRE, J13-020, J13-021, Not tested, 10.0 Ohm, Not tested
+ 67, WIRE, J13-021, J13-022, Not tested, 10.0 Ohm, Not tested
+ 68, WIRE, J13-022, J13-023, Not tested, 10.0 Ohm, Not tested
+ 69, WIRE, J13-023, J13-024, Not tested, 10.0 Ohm, Not tested
+ 70, WIRE, J13-024, J13-025, Not tested, 10.0 Ohm, Not tested
+ 71, WIRE, J13-025, J13-028, Not tested, 10.0 Ohm, Not tested
+ 72, WIRE, J13-028, J13-029, Not tested, 10.0 Ohm, Not tested
+ 73, WIRE, J13-029, J13-032, Not tested, 10.0 Ohm, Not tested
+ 74, WIRE, J13-032, J13-033, Not tested, 10.0 Ohm, Not tested
+ 75, WIRE, J13-033, J13-036, Not tested, 10.0 Ohm, Not tested
+ 76, WIRE, J13-036, J13-037, Not tested, 10.0 Ohm, Not tested
+ 77, WIRE, J13-037, J13-038, Not tested, 10.0 Ohm, Not tested
+ 78, WIRE, J13-038, J13-039, Not tested, 10.0 Ohm, Not tested
+ 79, WIRE, J13-039, J13-040, Not tested, 10.0 Ohm, Not tested
+ 80, WIRE, J13-040, J13-041, Not tested, 10.0 Ohm, Not tested
+ 81, WIRE, J13-041, J13-042, Not tested, 10.0 Ohm, Not tested
+ 82, WIRE, J13-042, J13-044, Not tested, 10.0 Ohm, Not tested
+ 83, WIRE, J13-044, J13-045, Not tested, 10.0 Ohm, Not tested
+ 84, WIRE, J13-045, J13-047, Not tested, 10.0 Ohm, Not tested
+ 85, WIRE, J13-047, J13-048, Not tested, 10.0 Ohm, Not tested
+ 86, WIRE, J13-048, J13-049, Not tested, 10.0 Ohm, Not tested
+ 87, WIRE, J13-049, J13-050, Not tested, 10.0 Ohm, Not tested
+ 88, WIRE, J13-050, J13-051, Not tested, 10.0 Ohm, Not tested
+ 89, WIRE, J13-051, J13-052, Not tested, 10.0 Ohm, Not tested
+ 90, WIRE, J13-052, J15-002, Not tested, 10.0 Ohm, Not tested
+ 91, WIRE, J15-002, J15-003, Not tested, 10.0 Ohm, Not tested
+ 92, WIRE, J15-003, J15-004, Not tested, 10.0 Ohm, Not tested
+ 93, WIRE, J15-004, J15-007, Not tested, 10.0 Ohm, Not tested
+ 94, WIRE, J15-007, J15-008, Not tested, 10.0 Ohm, Not tested
+ 95, WIRE, J15-008, J15-009, Not tested, 10.0 Ohm, Not tested
+ 96, WIRE, J15-009, J15-010, Not tested, 10.0 Ohm, Not tested
+ 97, WIRE, J15-010, J15-011, Not tested, 10.0 Ohm, Not tested
+ 98, WIRE, J15-011, J15-012, Not tested, 10.0 Ohm, Not tested
+ 99, WIRE, J15-012, J15-015, Not tested, 10.0 Ohm, Not tested
+ 100, WIRE, J15-015, J15-016, Not tested, 10.0 Ohm, Not tested
+ 101, WIRE, J15-016, J15-017, Not tested, 10.0 Ohm, Not tested
+ 102, WIRE, J15-017, J15-018, Not tested, 10.0 Ohm, Not tested
+ 103, WIRE, J15-018, J15-019, Not tested, 10.0 Ohm, Not tested
+ 104, WIRE, J15-019, J15-020, Not tested, 10.0 Ohm, Not tested
+ 105, WIRE, J15-020, J15-021, Not tested, 10.0 Ohm, Not tested
+ 106, WIRE, J15-021, J15-023, Not tested, 10.0 Ohm, Not tested
+ 107, WIRE, J15-023, J15-024, Not tested, 10.0 Ohm, Not tested
+ 108, WIRE, J15-024, J15-025, Not tested, 10.0 Ohm, Not tested
+ 109, WIRE, J15-025, J15-026, Not tested, 10.0 Ohm, Not tested
+ 110, WIRE, J15-026, J15-028, Not tested, 10.0 Ohm, Not tested
+ 111, WIRE, J15-028, J15-029, Not tested, 10.0 Ohm, Not tested
+ 112, WIRE, J15-029, J15-032, Not tested, 10.0 Ohm, Not tested
+ 113, WIRE, J15-032, J15-033, Not tested, 10.0 Ohm, Not tested
+ 114, WIRE, J15-033, J15-034, Not tested, 10.0 Ohm, Not tested
+ 115, WIRE, J15-034, J15-035, Not tested, 10.0 Ohm, Not tested
+ 116, WIRE, J15-035, J15-036, Not tested, 10.0 Ohm, Not tested
+ 117, WIRE, J15-036, J15-037, Not tested, 10.0 Ohm, Not tested
+ 118, WIRE, J15-037, J15-040, Not tested, 10.0 Ohm, Not tested
+ 119, WIRE, J15-040, J15-041, Not tested, 10.0 Ohm, Not tested
+ 120, WIRE, J15-041, J15-042, Not tested, 10.0 Ohm, Not tested
+ 121, WIRE, J15-042, J15-044, Not tested, 10.0 Ohm, Not tested
+ 122, WIRE, J15-044, J15-045, Not tested, 10.0 Ohm, Not tested
+ 123, WIRE, J15-045, J15-046, Not tested, 10.0 Ohm, Not tested
+ 124, WIRE, J15-046, J15-047, Not tested, 10.0 Ohm, Not tested
+ 125, WIRE, J15-047, J15-048, Not tested, 10.0 Ohm, Not tested
+ 126, WIRE, J15-048, J15-049, Not tested, 10.0 Ohm, Not tested
+ 127, WIRE, J15-049, J15-050, Not tested, 10.0 Ohm, Not tested
+ 128, WIRE, J15-050, J15-052, Not tested, 10.0 Ohm, Not tested
+ 129, WIRE, J13-008, J15-005, Not tested, 10.0 Ohm, Not tested
+ 130, WIRE, J13-034, J13-063, Not tested, 10.0 Ohm, Not tested
+ 131, WIRE, J13-063, J13-064, Not tested, 10.0 Ohm, Not tested
+ 132, WIRE, J13-060, J13-062, Not tested, 10.0 Ohm, Not tested
+ 133, WIRE, J15-043, J15-061, Not tested, 10.0 Ohm, Not tested
+ 134, WIRE, J15-061, J15-063, Not tested, 10.0 Ohm, Not tested
+

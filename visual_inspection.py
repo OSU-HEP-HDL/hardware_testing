@@ -3,6 +3,10 @@ from modules.reception_module import enter_serial_numbers,get_comp_info
 import itkdb
 import shutil
 import argparse
+import os
+import sys
+import re
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("images",nargs="*",help="Add visual inspection photos to upload to the production database")
@@ -39,7 +43,7 @@ def upload_reception_results(client,meta_data,template):
 
   while True:
      try:
-        print("Has the",meta_data["type"],"passed the Visual Inspection test?")
+        print("Has the",meta_data["type"],"passed the Visual Inspection test? (y or n)")
         ans = input("\nAnswer: ")
         if ans == "yes" or ans == "y":
            passed = True
@@ -115,11 +119,29 @@ def upload_attachments(client,images,meta_data):
       if x['code'] == "VISUAL_INSPECTION":
          numInsp = len(x["testRuns"])
          testRun = x["testRuns"]
-         
+
+   # This is in case any argument is a in a different directory
+   altered_image_list =[]
+   if "/" in images["images"][0]:
+      for image in images["images"]:
+         g = image.split("/")
+         glen = len(g)
+         img_name = g[glen-1]
+         shutil.copy2(image, img_name)
+         altered_image_list.append(img_name)
+   
    image_list = []
-   for image in images["images"]:
-      shutil.copy(image,itkdb.data)
-      image_list.append(itkdb.data / image)
+
+   if "/" in images["images"][0]:
+      for image in altered_image_list:
+         shutil.copy(image,itkdb.data)
+         image_list.append(itkdb.data / image)
+         os.remove(image)
+
+   else:
+      for image in images["images"]:
+         shutil.copy(image,itkdb.data)
+         image_list.append(itkdb.data / image)
 
    data_list = []
    for img in image_list:
@@ -137,12 +159,12 @@ def upload_attachments(client,images,meta_data):
 
    print("You are about to upload",len(image_list), "images to the visual inspection test with run number",numInsp,", do you want to continue? (y or n)")
    ans = input("Answer: ")
-   if ans == "y" or "yes":
+   if str(ans) == "y" or str(ans) == "yes":
       for data, attachment in zip(data_list, attachment_list):
          client.post("createTestRunAttachment",data=data,files=attachment)
       print("Attachment(s) successfully uploaded!")
    else:
-      print("Not uploading photos. Exiting")
+      print("Not uploading photos")
 
 def upload_results_locally(client,results,serial_number):
    print("Uploading Visual Inspection results locally...")
@@ -160,7 +182,7 @@ def upload_results_locally(client,results,serial_number):
          }
          db.update_one({"_id": serial_number},result)
          print("Uploaded results locally!")
-   except IndexError:
+   except ValueError:
       print("Component with serial number",serial_number,"doesn't exist locally!")
       
    
@@ -173,7 +195,7 @@ def main():
     template = get_reception_template(itkdb_client,meta_data)
     results = upload_reception_results(itkdb_client,meta_data,template)
 
-    if args["images"] is None:
+    if args["images"] is not None:
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data)
     upload_results_locally(mongodb_client,results,serial_number)
