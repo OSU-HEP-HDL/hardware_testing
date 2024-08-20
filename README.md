@@ -44,7 +44,9 @@ python register_components.py
 ```
 This script walks you through a menu about the component or components you're registering. If everything in the menu is answered properly, it'll output and use the ATLAS serial number(s) for both databases. 
 
-When prompted about the component number, there are two options: First, the code parses through existing components with ATLAS serial you've entered and tells you how many currently exist and how many exist with your chosen flavor. It then prompots you if you want to start the component number where the latest number left off. Second, you can also manually enter a number (not recommended).
+When prompted about the component number, there are two options: 
+1. the code parses through existing components with ATLAS serial you've entered and tells you how many currently exist and how many exist with your chosen flavor. It then prompots you if you want to start the component number where the latest number left off. 
+2. You can also manually enter a number (not recommended).
 
 Once you answer the prompt on the vendor, your component(s) will be registered with the ITk database. The registering to the local database happens **automatically** after it successfully uploads to the ITk databse. This is to ensure both databases are synced up with the components. The script does parse through the local database to ensure there are no duplicates. 
 
