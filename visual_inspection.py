@@ -169,7 +169,7 @@ def main():
     mongodb_client = authenticate_user_mongodb()
     single = True
     serial_number = enter_serial_numbers(single)
-    meta_data = get_comp_info(itkdb_client,serial_number)
+    meta_data = get_comp_info(itkdb_client,serial_number,args)
     template = get_reception_template(itkdb_client,meta_data)
     results = upload_reception_results(itkdb_client,meta_data,template)
 

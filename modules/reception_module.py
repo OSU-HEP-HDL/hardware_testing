@@ -2,6 +2,8 @@ from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 import datetime
 import segno
 import json
+import os
+import sys
 
 def prepend(list, str):
     # Using format()
@@ -219,11 +221,16 @@ def get_type(xxyy, N2):
         raise ValueError("Your selection does not exist! Please retry.")
     return comp_type
 
-def get_comp_info(client,serialNumber):
+def get_comp_info(client,serialNumber,args):
     comp_filter = {
         "component": serialNumber
     }
-    component = client.get("getComponent",json=comp_filter)
+    try:
+        component = client.get("getComponent",json=comp_filter)
+    except:
+        print("Component doesn't exist!")
+        os.execv(sys.executable, ['python'] + sys.argv)
+
     test_types = client.get("listTestTypes",json={"project": component["project"]["code"], "componentType":component["componentType"]["code"]})
     test_list = []
     for test_type in test_types:
