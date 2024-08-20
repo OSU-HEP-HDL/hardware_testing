@@ -46,9 +46,13 @@ This script walks you through a menu about the component or components you're re
 
 When prompted about the component number, there are two options: 
 1. the code parses through existing components with ATLAS serial you've entered and tells you how many currently exist and how many exist with your chosen flavor. It then prompots you if you want to start the component number where the latest number left off. 
+
 2. You can also manually enter a number (not recommended).
 
-Once you answer the prompt on the vendor, your component(s) will be registered with the ITk database. The registering to the local database happens **automatically** after it successfully uploads to the ITk databse. This is to ensure both databases are synced up with the components. The script does parse through the local database to ensure there are no duplicates. 
+Once you answer the prompt on the vendor, your component(s) will be registered with the ITk database. 
+
+### Local Database
+The registering to the local database happens **automatically** after it successfully uploads to the ITk databse. This is to ensure both databases are synced up with the components. The script does parse through the local database to ensure there are no duplicates. 
 
 ## Removing Components
 To remove components, run:
@@ -57,6 +61,7 @@ python remove_components.py
 ```
 This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
 
+### Local Database
 Once components are removed from the ITk database, they are removed **automatically** from the local database to ensure both are synced with components. 
 
 ## Visual Inspection
@@ -65,7 +70,10 @@ To upload the results of the visual inspection test, run:
 python visual_inspection.py image*.png
 ```
 This script takes the inspection images as arguements. This can be a single image, multiple images (* works for tuple input), or no arguements (include no images).
-You'll be prompted to manually input a single serial number for the component you've tested. If the test is passed, the results and its images are uploaded to the ITk database. The local database uses MongoDB which does not work for images, **IN PROGRESS:** urls are uploaded in their place linking the file shared system that store these images.
-
+You'll be prompted to manually input a single serial number for the component you've tested. If the test is passed, the results and its images are uploaded to the ITk database. 
 If the component did not pass the test. You are asked for the reason, you can either manually enter this or choose from a list. If a common defect is not on the list, please tell me and I can add it. 
+
+### Local Database
+The local database uses MongoDB which does not work for images, **IN PROGRESS:** urls are uploaded in their place linking the file shared system that store these images.
+
 
