@@ -35,3 +35,31 @@ def insert_property_names(component):
         vendor = "Summit"
     
     return purpose, type_combination, vendor
+
+def upload_results_locally(client,results,serial_number,test_type):
+   print("Uploading test results locally...")
+   db = client["local"]["itk_testing"]
+   try:
+       if db.find_one({"_id": serial_number}) is None:
+           raise ValueError
+       elif 'tests' not in db.find_one({"_id": serial_number}):
+           result = {"$set":{
+               "tests":{
+                 test_type: results
+               }
+             }
+           }
+           db.update_one({"_id": serial_number},result)
+           print("Uploaded results locally!")
+       else:
+           key = "tests."+test_type
+           result = {"$set":{
+               key:results
+               
+             }
+           }
+           db.update_one({"_id": serial_number},result)
+           print("Uploaded results locally!")
+ 
+   except ValueError:
+      print("Component with serial number",serial_number,"doesn't exist locally!")

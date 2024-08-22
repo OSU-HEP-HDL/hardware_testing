@@ -1,5 +1,6 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry
+from modules.mongo_db import upload_results_locally
 import itkdb
 import shutil
 import argparse
@@ -149,25 +150,6 @@ def upload_attachments(client,images,meta_data):
       print("Attachment(s) successfully uploaded!")
    else:
       print("Not uploading photos")
-
-def upload_results_locally(client,results,serial_number):
-   print("Uploading Visual Inspection results locally...")
-   db = client["local"]["itk_testing"]
-   try:
-      if db.find_one({"_id": serial_number}) is None:
-         raise ValueError
-      else:
-         result = {"$set":{
-                     "tests":{
-                        "VISUAL_INSPECTION": results
-               }
-            }
-         }
-         db.update_one({"_id": serial_number},result)
-         print("Uploaded results locally!")
-   except ValueError:
-      print("Component with serial number",serial_number,"doesn't exist locally!")
-      
    
 def main():
     itkdb_client = authenticate_user_itkdb()
@@ -182,7 +164,7 @@ def main():
     if enquiry(args["images"]):
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data)
-    upload_results_locally(mongodb_client,results,serial_number)
+    upload_results_locally(mongodb_client,results,serial_number,test_type)
 
 
 if __name__ == '__main__':

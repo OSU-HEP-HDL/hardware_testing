@@ -1,5 +1,6 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry
+from modules.mongo_db import upload_results_locally
 import itkdb
 import shutil
 import argparse
@@ -76,7 +77,7 @@ def upload_connectivity_test(client,template,meta_data,results):
     
     component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
 
-    ''' First, updated components stage to connectivity'''
+    ''' First, update components stage to connectivity if needed'''
    
     if component["currentStage"]["code"] != "CONNECTIVITY":
       print("Updating component stage to Connectivity...")
@@ -158,10 +159,9 @@ def main():
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number,args)
     template = get_template(itkdb_client,meta_data,test_type)
-    upload_connectivity_test(itkdb_client,template,meta_data,result_list)
-
-
-
+    test_results = upload_connectivity_test(itkdb_client,template,meta_data,result_list)
+    upload_results_locally(mongodb_client,test_results,serial_number,test_type)
+    
 
 if __name__ == '__main__':
   main()

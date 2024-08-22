@@ -224,7 +224,8 @@ def get_type(xxyy, N2):
     elif str(code) == "PG" and N2 == 4:
         comp_type = "TYPE0_TO_PP0"
     else:
-        raise ValueError("Your selection does not exist! Please retry.")
+        print("Your selection does not exist! Please retry.")
+        os.execv(sys.executable, ['python'] + sys.argv)
     return comp_type
 
 def get_comp_info(client,serialNumber,args):
