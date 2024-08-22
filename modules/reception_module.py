@@ -22,6 +22,12 @@ def create_labels(meta_data):
 def print_labels():
     pass
 
+def enquiry(list):
+    if len(list) == 0:
+        return 0
+    else:
+        return 1
+
 def get_component_type():
     comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY", "PPO"]
     print("Select a component type.\n")
@@ -230,7 +236,6 @@ def get_comp_info(client,serialNumber,args):
     except:
         print("Component doesn't exist!")
         os.execv(sys.executable, ['python'] + sys.argv)
-
     test_types = client.get("listTestTypes",json={"project": component["project"]["code"], "componentType":component["componentType"]["code"]})
     test_list = []
     for test_type in test_types:
@@ -247,6 +252,20 @@ def get_comp_info(client,serialNumber,args):
     
     return meta_data
     
+def get_template(client,meta_data,test_type):
+   ind=0
+   for test in meta_data["testTypes"]:
+      if str(test) == test_type:
+         break
+      ind += 1
+   rec_filter = {
+      'project': meta_data['project'],
+      'componentType': meta_data['componentType'],
+      'code': meta_data['testTypes'][ind]
+   }
+   test_template = client.get("generateTestTypeDtoSample",json=rec_filter)
+   
+   return test_template
 
 def enter_serial_numbers(single=False):
    if single == True:

@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers,get_comp_info
+from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry
 import itkdb
 import shutil
 import argparse
@@ -12,20 +12,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("images",nargs="*",help="Add visual inspection photos to upload to the production database")
 args = vars(parser.parse_args())
 
-def get_reception_template(client,meta_data):
-   ind=0
-   for test in meta_data["testTypes"]:
-      if str(test) == "VISUAL_INSPECTION":
-         break
-      ind += 1
-   rec_filter = {
-      'project': meta_data['project'],
-      'componentType': meta_data['componentType'],
-      'code': meta_data['testTypes'][ind]
-   }
-   test_template = client.get("generateTestTypeDtoSample",json=rec_filter)
-   
-   return test_template
 
 def upload_reception_results(client,meta_data,template):
   ''' Check to see if reception has occured before'''
@@ -35,11 +21,9 @@ def upload_reception_results(client,meta_data,template):
       runNumber = str(len(component["tests"]) + 1)
   else:
       for x in component["tests"]:
-         #print(x['testRuns'])
          if x['code'] == "VISUAL_INSPECTION":
             runNumber = len(x["testRuns"])
       runNumber = str(runNumber + 1)
-      #print(runNumber)
 
   while True:
      try:
@@ -88,7 +72,6 @@ def upload_reception_results(client,meta_data,template):
      except ValueError:
         print("Invalid input. Yes (y) or No (n)")
     
-  #print(template)
   test_results ={
      **template,
      'component': meta_data['serialNumber'],
@@ -122,6 +105,7 @@ def upload_attachments(client,images,meta_data):
 
    # This is in case any argument is a in a different directory
    altered_image_list =[]
+
    if "/" in images["images"][0]:
       for image in images["images"]:
          g = image.split("/")
@@ -173,7 +157,6 @@ def upload_results_locally(client,results,serial_number):
       if db.find_one({"_id": serial_number}) is None:
          raise ValueError
       else:
-         print("or here?")
          result = {"$set":{
                      "tests":{
                         "VISUAL_INSPECTION": results
@@ -190,12 +173,13 @@ def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     single = True
+    test_type = "VISUAL_INSPECTION"
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number,args)
-    template = get_reception_template(itkdb_client,meta_data)
+    template = get_template(itkdb_client,meta_data,test_type)
     results = upload_reception_results(itkdb_client,meta_data,template)
 
-    if args["images"] is not None:
+    if enquiry(args["images"]):
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data)
     upload_results_locally(mongodb_client,results,serial_number)
