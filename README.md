@@ -39,7 +39,7 @@ visual_inspection.py
 ```
 The ```serial_number_generator.py``` is an offline SN generator. This is not needed to be ran to register components.
 
-## Restering Components
+## Registering Components
 Assuming setup has worked properly, you can now register components by:
 ```
 python register_components.py
