@@ -76,6 +76,14 @@ You'll be prompted to manually input a single serial number for the component yo
 If the component did not pass the test. You are asked for the reason, you can either manually enter this or choose from a list. If a common defect is not on the list, please tell me and I can add it. 
 
 ### Local Database
-The results are **automatically** uploaded to the local database. The local database used for the components uses MongoDB which does not work for images, **IN PROGRESS:** urls are uploaded in their place linking the file shared system that store these images.
+The results are **automatically** uploaded to the local database. The local database used for the components uses MongoDB which does not work for images, **IN PROGRESS:** urls are uploaded in their place linking the file shared system that store these images. The test result can be found under the key {'tests':'VISUAL_INSPECTION'}
 
+## Connectivity Test
+To upload the test results for the connectivity test, run:
+```
+python connectivity.py [CIRRUS output csv]
+```
+This script requires a csv produced by the CIRRUS tester as an argument. This script currently stores the test result, user, wire info, plus all the table information regardless of passing for failing. 
 
+### Local Database
+The results are **automatically** uploaded to the local database and can be found under the {'tests': 'CONNECTIVITY_TEST'}
