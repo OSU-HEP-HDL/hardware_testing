@@ -228,7 +228,7 @@ def get_type(xxyy, N2):
         os.execv(sys.executable, ['python'] + sys.argv)
     return comp_type
 
-def get_comp_info(client,serialNumber,args):
+def get_comp_info(client,serialNumber):
     comp_filter = {
         "component": serialNumber
     }

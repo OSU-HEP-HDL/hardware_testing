@@ -151,7 +151,7 @@ def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     if not enquiry(args["csv"]):
-      print("No CSV included! Exitting...")
+      print("No CSV included! Exiting...")
       exit()
     result_list = get_csv_results(args)
     single = True
