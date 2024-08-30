@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry
+from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry,update_test_type
 from modules.mongo_db import upload_results_locally
 import itkdb
 import shutil
@@ -77,20 +77,6 @@ def upload_connectivity_test(client,template,meta_data,results):
     
     component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
 
-    ''' First, update components stage to connectivity if needed'''
-   
-    if component["currentStage"]["code"] != "CONNECTIVITY":
-      print("Updating component stage to Connectivity...")
-      set_stage = {
-        "component": meta_data["serialNumber"],
-        "stage": "CONNECTIVITY",
-        "rework": False,
-        "comment": "updated stage to connectivity on "+str(datetime.datetime),
-        "history": True
-      }
-      client.post("setComponentStage",json=set_stage)
-      print("Stage updated!")
-    
     runNumber = 0
     if len(component["tests"]) == 0:
       print("WARNING: No Visual Inspection test with this component")
@@ -121,6 +107,7 @@ def upload_connectivity_test(client,template,meta_data,results):
       result = True
       problems = False
 
+    print(error_results)
     test_results ={
      **template,
      'component': meta_data['serialNumber'],
@@ -155,10 +142,11 @@ def main():
       exit()
     result_list = get_csv_results(args)
     single = True
-    test_type = "CONNECTIVITY_TEST"
+    test_type = "CONNECTIVITY"
     serial_number = enter_serial_numbers(single)
-    meta_data = get_comp_info(itkdb_client,serial_number,args)
+    meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
+    update_test_type(itkdb_client,meta_data,test_type)
     test_results = upload_connectivity_test(itkdb_client,template,meta_data,result_list)
     upload_results_locally(mongodb_client,test_results,serial_number,test_type)
     

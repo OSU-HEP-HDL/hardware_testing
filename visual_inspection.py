@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry
+from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments
 from modules.mongo_db import upload_results_locally
 import itkdb
 import shutil
@@ -12,7 +12,6 @@ import re
 parser = argparse.ArgumentParser()
 parser.add_argument("images",nargs="*",help="Add visual inspection photos to upload to the production database")
 args = vars(parser.parse_args())
-
 
 def upload_reception_results(client,meta_data,template):
   ''' Check to see if reception has occured before'''
@@ -95,75 +94,20 @@ def upload_reception_results(client,meta_data,template):
    
   return test_results
     
-
-def upload_attachments(client,images,meta_data):
-   component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
-
-   for x in component["tests"]:
-      if x['code'] == "VISUAL_INSPECTION":
-         numInsp = len(x["testRuns"])
-         testRun = x["testRuns"]
-
-   # This is in case any argument is a in a different directory
-   altered_image_list =[]
-
-   if "/" in images["images"][0]:
-      for image in images["images"]:
-         g = image.split("/")
-         glen = len(g)
-         img_name = g[glen-1]
-         shutil.copy2(image, img_name)
-         altered_image_list.append(img_name)
-   
-   image_list = []
-
-   if "/" in images["images"][0]:
-      for image in altered_image_list:
-         shutil.copy(image,itkdb.data)
-         image_list.append(itkdb.data / image)
-         os.remove(image)
-
-   else:
-      for image in images["images"]:
-         shutil.copy(image,itkdb.data)
-         image_list.append(itkdb.data / image)
-
-   data_list = []
-   for img in image_list:
-      data_list.append({
-         "testRun": testRun[numInsp-1]["id"],
-         "title": "Visual Inpection photos",
-         "description": "Photos of the visual inspection test",
-         "type": "file",
-         "url": img
-      })
-
-   attachment_list = []
-   for img in image_list:
-      attachment_list.append({"data": (img.name, img.open("rb"), "image/jpg")})
-
-   print("You are about to upload",len(image_list), "images to the visual inspection test with run number",numInsp,", do you want to continue? (y or n)")
-   ans = input("Answer: ")
-   if str(ans) == "y" or str(ans) == "yes":
-      for data, attachment in zip(data_list, attachment_list):
-         client.post("createTestRunAttachment",data=data,files=attachment)
-      print("Attachment(s) successfully uploaded!")
-   else:
-      print("Not uploading photos")
-   
 def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     single = True
     test_type = "VISUAL_INSPECTION"
     serial_number = enter_serial_numbers(single)
-    meta_data = get_comp_info(itkdb_client,serial_number,args)
+    meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
-    results = upload_reception_results(itkdb_client,meta_data,template)
 
+    results = upload_reception_results(itkdb_client,meta_data,template)
+    
     if enquiry(args["images"]):
       print("Image arguements included. Starting attachment upload.")
-      upload_attachments(itkdb_client,args,meta_data)
+      upload_attachments(itkdb_client,args,meta_data,test_type)
     upload_results_locally(mongodb_client,results,serial_number,test_type)
 
 

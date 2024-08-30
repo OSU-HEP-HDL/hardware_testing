@@ -1,0 +1,44 @@
+D0,,
+,designed impedance:,1.1
+,measured impedance:,2.2
+,,
+,Data Loss,
+,0.5 GHz,3.3
+,1.0 GHz,4.4
+,1.5 GHz,5.5
+,2.0 GHz,6.6
+,,
+,Eye Diagram,
+,jitter,7.7
+,height,8.8
+,width,9.9
+,,
+D1,,
+,designed impedance:,10.1
+,measured impedance:,11.1
+,,
+,Data Loss,
+,0.5 GHz,12.2
+,1.0 GHz,13.3
+,1.5 GHz,14.4
+,2.0 GHz,15.5
+,,
+,Eye Diagram,
+,jitter,16.6
+,height,17.7
+,width,18.8
+,,
+D2,,
+,designed impedance:,21.1
+,measured impedance:,22.2
+,,
+,Data Loss,
+,0.5 GHz,23.3
+,1.0 GHz,24.4
+,1.5 GHz,25.5
+,2.0 GHz,26.6
+,,
+,Eye Diagram,
+,jitter,27.7
+,height,28.8
+,width,29.9

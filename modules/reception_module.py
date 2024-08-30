@@ -1,9 +1,11 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+import itkdb
 import datetime
 import segno
 import json
 import os
 import sys
+import shutil
 
 def prepend(list, str):
     # Using format()
@@ -227,6 +229,79 @@ def get_type(xxyy, N2):
         print("Your selection does not exist! Please retry.")
         os.execv(sys.executable, ['python'] + sys.argv)
     return comp_type
+
+def update_test_type(client,meta_data,test_type):
+    component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
+   
+    if component["currentStage"]["code"] != test_type:
+      print("Updating component stage to", test_type)
+      set_stage = {
+        "component": meta_data["serialNumber"],
+        "stage": test_type,
+        "rework": False,
+        "comment": "updated stage to connectivity on "+str(datetime.datetime),
+        "history": True
+      }
+      client.post("setComponentStage",json=set_stage)
+      print("Stage updated!")
+    
+    
+def upload_attachments(client,attch,meta_data,test_type):
+   component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
+
+   for x in component["tests"]:
+      if x['code'] == test_type:
+         numInsp = len(x["testRuns"])
+         testRun = x["testRuns"]
+
+   # This is in case any argument is a in a different directory
+   altered_attch_list =[]
+   for arg_key, value in attch.items():
+       key = arg_key
+   if "/" in attch[key][0]:
+      for image in attch[key]:
+         g = image.split("/")
+         glen = len(g)
+         img_name = g[glen-1]
+         shutil.copy2(image, img_name)
+         altered_attch_list.append(img_name)
+   
+   attch_list = []
+
+   if "/" in attch[key][0]:
+      for atch in altered_attch_list:
+         shutil.copy(atch,itkdb.data)
+         attch_list.append(itkdb.data / atch)
+         os.remove(atch)
+
+   else:
+      for atch in attch[key]:
+         shutil.copy(atch,itkdb.data)
+         attch_list.append(itkdb.data / atch)
+
+   data_list = []
+   for atch, title in zip(attch_list,altered_attch_list):
+      data_list.append({
+         "testRun": testRun[numInsp-1]["id"],
+         "title": title,
+         "description": "Attachment for"+test_type,
+         "type": "file",
+         "url": atch
+      })
+
+   attachment_list = []
+   for atch in attch_list:
+      attachment_list.append({"data": (atch.name, atch.open("rb"), "image/csv")})
+
+   print("You are about to upload",len(attachment_list), "attachments to " +test_type+" test with run number",numInsp,", do you want to continue? (y or n)")
+   ans = input("Answer: ")
+   if str(ans) == "y" or str(ans) == "yes":
+      for data, attachment in zip(data_list, attachment_list):
+         client.post("createTestRunAttachment",data=data,files=attachment)
+      print("Attachment(s) successfully uploaded!")
+   else:
+      print("Not uploading photos")
+
 
 def get_comp_info(client,serialNumber):
     comp_filter = {
