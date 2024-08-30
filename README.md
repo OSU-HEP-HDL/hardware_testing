@@ -102,6 +102,42 @@ python signal_integrity.py results_folder/*
 ```
 This test requires a folder with the results from the signal integrity test. All files within this folder will be uploaded as attachments to the test. Currently, the desired parameters that are saved need to be saved by hand in a csv. 
 
+Data Structure:
+
+The data is structured in 2D arrays. The first dimension index refers to each differential pair and the second dimension are those pair's values. For example:
+```
+[[1,2,3],[4,5,6],[7,8,9]]
+```
+Here, the ```[1,2,3]``` refers to the first differential pair, ```[4,5,6]``` refers to the second, and so on. 
+Each value refers to a specific parameter as seen in the table.
+
+|------------------------|---------------------|---------------------|-----|
+|                        | Differential Pair 1 | Differential Pair 2 | ... |
+|------------------------|---------------------|---------------------|-----|
+| **Measured Impedance** |          1.0        |          1.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+| **Designed Impedance** |          2.0        |          2.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|     **Data Loss**      |                     |                     |     |
+|------------------------|---------------------|---------------------|-----|
+|         0.5 GHz        |         3.0         |          3.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|         1.0 GHz        |         4.0         |          4.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|         1.5 GHz        |         5.0         |          5.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|         2.0 GHz        |         6.0         |          6.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+| **Eye Diagram Values** |                     |                     |     |
+|------------------------|---------------------|---------------------|-----|
+|        Jitter          |         7.0         |          7.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|        Height          |         8.0         |          8.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+|        Width           |         9.0         |          9.1        | ... |
+|------------------------|---------------------|---------------------|-----|
+
+
 ### Local Database
 The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'SIGNAL_INTEGRITY'}]
 
