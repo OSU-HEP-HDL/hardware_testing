@@ -80,6 +80,7 @@ python visual_inspection.py image_folder/*.png
 ```
 This script takes the inspection images as arguements. This can be a single image, multiple images (* works for tuple input), or no arguements (include no images).
 You'll be prompted to manually input a single serial number for the component you've tested. If the test is passed, the results and its images are uploaded to the ITk database. 
+
 If the component did not pass the test. You are asked for the reason, you can either manually enter this or choose from a list. If a common defect is not on the list, please tell me and I can add it. 
 
 ### Local Database
@@ -112,7 +113,7 @@ To run the test:
 ```
 python signal_integrity.py results_folder/*
 ```
-This test requires a folder with the results from the signal integrity test. All files within this folder will be uploaded as attachments to the test. Currently, the desired parameters that are saved need to be saved by hand in a csv. 
+This test requires a folder with the results from the signal integrity test. All files within this folder will be uploaded as attachments to the test. Currently, the desired parameters that are saved need to be saved by hand in a csv. To save the images to the test, just ensure that they are contained within the result folder.
 
 Data Structure:
 
