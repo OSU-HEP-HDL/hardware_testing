@@ -106,9 +106,9 @@ Data Structure:
 
 The data is structured in 2D arrays. The first dimension index refers to each differential pair and the second dimension are those pair's values. For example:
 ```
-[[1,2,3],[4,5,6],[7,8,9]]
+[[3.0,4.0,5.0,6.0],[3.1,4.1,5.1,6.1],[3.2,4.2,5.2,6.2]]
 ```
-Here, the ```[1,2,3]``` refers to the first differential pair, ```[4,5,6]``` refers to the second, and so on. 
+Here, the ```[3.0,4.0,5.0,6.0]``` refers to the first differential pair, ```[3.1,4.1,5.1,6.1]``` refers to the second, and so on. 
 Each value refers to a specific parameter as seen in the table.
 
 
