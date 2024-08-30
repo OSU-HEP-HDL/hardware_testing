@@ -113,6 +113,7 @@ Each value refers to a specific parameter as seen in the table.
 
 
 |                        | Differential Pair 1 | Differential Pair 2 | ... |
+| ---------------------- | ------------------- | ------------------- | --- |
 | **Measured Impedance** |          1.0        |          1.1        | ... |
 | **Designed Impedance** |          2.0        |          2.1        | ... |
 |     **Data Loss**      |                     |                     |     |
