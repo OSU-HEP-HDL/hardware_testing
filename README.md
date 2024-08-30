@@ -1,6 +1,7 @@
 # hardware_testing
 Tools for performing hardware tests and uploading to databases.
 
+In order to run these scripts, the user must have an account with the ITk database. https://itkpd-test.unicorncollege.cz/
 # Setup
 It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
 
@@ -31,11 +32,17 @@ If setup is ran successfully, ```setup.sh``` should not be needed to be reran, e
 
 To connect to MongoDB, you need to be a part of the OSU network. If you're working from outside the network, you'll need to use Cisco (or another VPN). Instructions on how to set this up can be found here: https://it.okstate.edu/services/osuvpn/
 # Running Scripts
-Currently there are only three scripts that connect to the ITk database and the local database. 
+The main test stand workflow scripts are:
 ```
 register_components.py
-remove_components.py
 visual_inspection.py
+connectivity.py
+signal_integrity.py
+```
+Within the `utilites` folder, the following useful scripts can be found:
+```
+remove_component.py
+serial_number_generator.py
 ```
 The ```serial_number_generator.py``` is an offline SN generator. This is not needed to be ran to register components.
 
@@ -59,7 +66,7 @@ The registering to the local database happens **automatically** after it success
 ## Removing Components
 To remove components, run:
 ```
-python remove_components.py
+python utilities/remove_components.py
 ```
 This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
 
@@ -69,7 +76,7 @@ Once components are removed from the ITk database, they are removed **automatica
 ## Visual Inspection
 To upload the results of the visual inspection test, run:
 ```
-python visual_inspection.py image*.png
+python visual_inspection.py image_folder/*.png
 ```
 This script takes the inspection images as arguements. This can be a single image, multiple images (* works for tuple input), or no arguements (include no images).
 You'll be prompted to manually input a single serial number for the component you've tested. If the test is passed, the results and its images are uploaded to the ITk database. 
@@ -81,9 +88,20 @@ The results are **automatically** uploaded to the local database. The local data
 ## Connectivity Test
 To upload the test results for the connectivity test, run:
 ```
-python connectivity.py [CIRRUS output csv]
+python connectivity.py CIRRUS_output.csv
 ```
 This script requires a csv produced by the CIRRUS tester as an argument. This script currently stores the test result, user, wire info, plus all the table information regardless of passing for failing. 
 
 ### Local Database
-The results are **automatically** uploaded to the local database and can be found under the {'tests': 'CONNECTIVITY_TEST'}
+The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'CONNECTIVITY_TEST'}]
+
+## Signal Integrity Test
+To run the test:
+```
+python signal_integrity.py results_folder/*
+```
+This test requires a folder with the results from the signal integrity test. All files within this folder will be uploaded as attachments to the test. Currently, the desired parameters that are saved need to be saved by hand in a csv. 
+
+### Local Database
+The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'SIGNAL_INTEGRITY'}]
+
