@@ -90,7 +90,19 @@ To upload the test results for the connectivity test, run:
 ```
 python connectivity.py CIRRUS_output.csv
 ```
-This script requires a csv produced by the CIRRUS tester as an argument. This script currently stores the test result, user, wire info, plus all the table information regardless of passing for failing. 
+This script requires a csv produced by the CIRRUS tester as an argument. The data structure for this test is as follows (contains dummy values):
+
+| **Properties**              | **Values** |
+| --------------------------- | ---------- |
+| Cable Number                |     1      |
+| Operator Name               |  Jane Doe  |
+| Short Test Resistance (kOhm)|  10 kOhm   |
+| Wire Resistance (Ohm)       |  10.0 Ohm  |
+| Error Details               | [" Instruction Detail"," Net NC: SHORT J1-010 to J1-012 J3-007", ...] |
+| Passed                      | False      |
+| Measured Values             | ["Not Tested","Not Tested","Not Tested","Not Tested",] |
+
+Error Details and Measure Values are tables taken directly from the CIRRUS csv output.
 
 ### Local Database
 The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'CONNECTIVITY_TEST'}]
