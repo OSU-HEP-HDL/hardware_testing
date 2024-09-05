@@ -125,6 +125,7 @@ def upload_component_local(client,component):
 
         updated_component = {
             **component,
+            'stage': 'RECEPTION',
             'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor},
             '_id': component["serialNumber"]
         }

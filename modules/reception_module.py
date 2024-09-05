@@ -230,9 +230,9 @@ def get_type(xxyy, N2):
         os.execv(sys.executable, ['python'] + sys.argv)
     return comp_type
 
-def update_test_type(client,meta_data,test_type):
+def update_test_type(client,mongo_client,meta_data,test_type):
     component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
-   
+    
     if component["currentStage"]["code"] != test_type:
       print("Updating component stage to", test_type)
       set_stage = {
@@ -244,7 +244,20 @@ def update_test_type(client,meta_data,test_type):
       }
       client.post("setComponentStage",json=set_stage)
       print("Stage updated!")
-    
+
+    ''' Update stage locally '''  
+    db = mongo_client["local"]["itk_testing"]
+
+    comp = db.find_one({"_id": meta_data['serialNumber']})
+    if comp is None:
+        print("Component doesn't exit locally, cannot update stage!")
+        exit()
+    if comp['stage'] != test_type:
+        up_stage = {'$set':{
+           'stage': test_type
+            }
+        }
+        db.update_one({"_id": meta_data['serialNumber']},up_stage)
     
 def upload_attachments(client,attch,meta_data,test_type):
    component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
@@ -566,6 +579,11 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register):
     existing_osu_components = []
     existing_components_flavor = []
     for i in existing_components:
+        
+        ''' For deleted components '''
+        if i['state'] == 'deleted':
+            continue
+
         code = str(i["institution"]["code"])
         if code == str("OSU"):
             existing_osu_components.append(i)

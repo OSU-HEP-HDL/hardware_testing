@@ -191,7 +191,7 @@ def main():
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
-    update_test_type(itkdb_client,meta_data,test_type)
+    update_test_type(itkdb_client,mongodb_client,meta_data,test_type)
     test_results = upload_signal_integrity_test(itkdb_client,template,meta_data,values,images)
     upload_attachments(itkdb_client,args,meta_data,test_type)
     upload_results_locally(mongodb_client,test_results,serial_number,test_type)

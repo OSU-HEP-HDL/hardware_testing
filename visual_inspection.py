@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments
+from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type
 from modules.mongo_db import upload_results_locally
 import itkdb
 import shutil
@@ -109,6 +109,7 @@ def main():
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data,test_type)
     upload_results_locally(mongodb_client,results,serial_number,test_type)
+
 
 
 if __name__ == '__main__':

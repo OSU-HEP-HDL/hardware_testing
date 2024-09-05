@@ -2,6 +2,8 @@
 Tools for performing hardware tests and uploading to databases.
 
 In order to run these scripts, the user must have an account with the ITk database. https://itkpd-test.unicorncollege.cz/
+
+A tutorial on these scripts can be found at https://github.com/OSU-HEP-HDL/hardware_database_tutorial
 # Setup
 It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
 
