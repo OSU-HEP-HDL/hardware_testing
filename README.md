@@ -41,13 +41,15 @@ visual_inspection.py
 connectivity.py
 signal_integrity.py
 ```
-Within the `utilites` folder, the following useful scripts can be found:
+Some utility scripts are included:
 ```
 remove_component.py
 serial_number_generator.py
-
+upload_attachment.py
+slac_update.py
 ```
 The ```serial_number_generator.py``` is an offline SN generator. This is not needed to be ran to register components.
+A further discussion on these scripts can be found in the **Utility Scripts** section below.
 
 ## Registering Components
 Assuming setup has worked properly, you can now register components by:
@@ -65,16 +67,6 @@ Once you answer the prompt on the vendor, your component(s) will be registered w
 
 ### Local Database
 The registering to the local database happens **automatically** after it successfully uploads to the ITk databse. This is to ensure both databases are synced up with the components. The script does parse through the local database to ensure there are no duplicates. 
-
-## Removing Components
-To remove components, run:
-```
-python utilities/remove_components.py
-```
-This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
-
-### Local Database
-Once components are removed from the ITk database, they are removed **automatically** from the local database to ensure both are synced with components. 
 
 ## Visual Inspection
 To upload the results of the visual inspection test, run:
@@ -148,4 +140,37 @@ The results are **automatically** uploaded to the local database and can be foun
 
 ## Utility Scripts
 
-Three utility scripts are included.
+Four utility scripts are included.
+```
+remove_component.py
+serial_number_generator.py
+upload_attachment.py
+slac_update.py
+```
+
+### Removing Components
+To remove components, run:
+```
+python remove_components.py
+```
+This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
+
+#### Local Database
+Once components are removed from the ITk database, they are removed **automatically** from the local database to ensure both are synced with components. 
+
+### Upload Extra Attachments
+If there are attachments you need to upload to a test that didn't make it into the original result posting, you can run:
+```
+python upload_attachments.py [attachment]
+```
+Provide the attachment as an argument. It will ask you which test to upload to, select one, and that's it!
+
+### Updating Stage to SLAC
+The final stages for the components are ```SHIPPING_TO_SLAC``` and ```RECEPTION_SLAC```. The script that updates to these stages is:
+```
+python slac_update.py
+```
+This will ask you which stage to update to, select one, and it will update to the stage.
+
+### Serial Number Generator
+This is an offline serial number generator that goes through the same menu as the ```register_component.py``` script. This just outputs the associated serial number for the user to use how they see fit. **THIS SCRIPT IS NOT NEEDED FOR REGISTERING COMPONENTS**
