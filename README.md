@@ -33,6 +33,8 @@ LOCAL_ADDRESS="mongodb_address:port"
 If setup is ran successfully, ```setup.sh``` should not be needed to be reran, even in a new shell. **NOTE:** After setup, your login credentials can be found in the ```.env```. You can edit this file to alter any credentials if there was a mistake made previously. Also, **YOUR CREDENTIALS ARE NOT HIDDEN, KEEP YOUR PERSONAL FILE SAFE!**
 
 To connect to MongoDB, you need to be a part of the OSU network. If you're working from outside the network, you'll need to use Cisco (or another VPN). Instructions on how to set this up can be found here: https://it.okstate.edu/services/osuvpn/
+
+All attachments that are larger than 64kB are uploaded to EOS. This is done automatically and can still be seen on the production database.
 # Running Scripts
 The main test stand workflow scripts are:
 ```
