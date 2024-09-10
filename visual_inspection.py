@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type
+from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type,check_file_size
 from modules.mongo_db import upload_results_locally
 import argparse
 
@@ -90,7 +90,8 @@ def upload_reception_results(client,meta_data,template):
   return test_results
     
 def main():
-    itkdb_client = authenticate_user_itkdb()
+    eos = check_file_size(args)
+    itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
     single = True
     test_type = "VISUAL_INSPECTION"

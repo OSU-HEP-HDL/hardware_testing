@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_comp_info, enter_serial_numbers
+from modules.reception_module import get_comp_info, enter_serial_numbers, check_file_size
 from modules.mongo_db import insert_property_names
 import itkdb
 import shutil
@@ -67,7 +67,8 @@ def upload_additional_attachments(client,attch,meta_data,test_type):
       print("Not uploading photos")
 
 def main():
-    itkdb_client = authenticate_user_itkdb()
+    eos = check_file_size(args)
+    itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
     single = True
     serial_number = enter_serial_numbers(single)

@@ -2,12 +2,12 @@ import itkdb
 import pymongo
 from dotenv import dotenv_values
 
-def authenticate_user_itkdb():
+def authenticate_user_itkdb(eos=False):
     '''
     Authenticates user base on ITKDB_ACCESS_CODE1="", ITKDB_ACCESS_CODE2="".
     Prints users first name
     '''
-    client = itkdb.Client()
+    client = itkdb.Client(use_eos=eos)
     auth = client.user.authenticate()
 
     if auth == False:
