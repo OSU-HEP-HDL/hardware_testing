@@ -45,6 +45,7 @@ Within the `utilites` folder, the following useful scripts can be found:
 ```
 remove_component.py
 serial_number_generator.py
+
 ```
 The ```serial_number_generator.py``` is an offline SN generator. This is not needed to be ran to register components.
 
@@ -145,3 +146,6 @@ Each value refers to a specific parameter as seen in the table.
 ### Local Database
 The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'SIGNAL_INTEGRITY'}]
 
+## Utility Scripts
+
+Three utility scripts are included.
