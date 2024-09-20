@@ -219,7 +219,7 @@ def get_type(xxyy, N2):
             except (ValueError, IndexError):
                 print("Invalid Input. Try again.")
         print(f"Selected {r0}\n")
-        comp_type == r0
+        comp_type = r0
     elif str(code) == "DP" and N2 == 2:
         print("Select Component which R0 type.")
         r0t_options = ["R0_DATA_FLEX","R05_DATA_FLEX"]
@@ -233,7 +233,7 @@ def get_type(xxyy, N2):
             except (ValueError, IndexError):
                 print("Invalid Input. Try again.")
         print(f"Selected {r0t}\n")
-        comp_type == r0t
+        comp_type = r0t
     elif str(code) == "PG" and N2 == 4:
         comp_type = "TYPE0_TO_PP0"
     else:
@@ -538,11 +538,17 @@ def get_existing_serials(client,partial_serial,xxyy,N2,flavor):
         }
     }
     existing_components = client.get("listComponents", json=search_filter)
-    print("Total components of type", comp_type,"found is:",existing_components.total)
+    if isinstance(existing_components,list):
+        print("Total components of type", comp_type,"found is:",len(existing_components))
+    else:
+        print("Total components of type", comp_type,"found is:",existing_components.total)
 
     existing_osu_components = []
     existing_components_flavor = []
     for i in existing_components:
+        '''For deleted components'''
+        if i['state'] == "deleted":
+            continue
         code = str(i["institution"]["code"])
         if code == str("OSU"):
             existing_osu_components.append(i)
@@ -558,7 +564,7 @@ def get_existing_serials(client,partial_serial,xxyy,N2,flavor):
             pass
     return existing_serials
     
-def get_latest_serial(client,xxyy, production_status, N2, flavor, register): 
+def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_type): 
     '''
     Checks data base for existing components with the same first 10 digits.
     Finds largest existing serial number and increments it by 1.
@@ -570,7 +576,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register):
     subproject1 = xxyy[0:2]
     subproject2 = xxyy[2:4]
 
-    comp_type = get_type(xxyy,N2)
+    #comp_type = get_type(xxyy,N2)
     print("The component type you're entering is:", comp_type)
     print("Searching production database for this type...")
     search_filter = {
