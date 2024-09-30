@@ -82,12 +82,14 @@ def upload_reception_results(client,meta_data,template):
   print("You are about to upload test results for the Visual Inspection test, are you sure? (y or n)")
   inp = input("\n")
   if inp == "y" or inp == "yes":
+     upload = True
      client.post("uploadTestRunResults",json = test_results)
      print("New test run successfully uploaded!")
   else:
+     upload = False
      print("Results not posted!")
    
-  return test_results
+  return test_results, upload
     
 def main():
     eos = check_file_size(args)
@@ -99,13 +101,15 @@ def main():
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
 
-    results = upload_reception_results(itkdb_client,meta_data,template)
+    results, upload = upload_reception_results(itkdb_client,meta_data,template)
     
-    if enquiry(args["images"]):
+    if enquiry(args["images"]) and upload == True:
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data,test_type)
-    upload_results_locally(mongodb_client,results,serial_number,test_type)
-
+    if upload == True:
+      upload_results_locally(mongodb_client,results,serial_number,test_type)
+    else:
+       print("Not uploading results locally")
 
 
 if __name__ == '__main__':

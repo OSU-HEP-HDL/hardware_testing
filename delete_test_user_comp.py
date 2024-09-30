@@ -21,10 +21,11 @@ def delete_test_user_comp(itkdb_client, mongo_db):
     for i in existing_components:
         '''For deleted components'''
         if i['state'] == "deleted":
+            #print(i)
             continue
         userIdentity = str(i["userIdentity"])
         if userIdentity == "7227-934-1":
-            existing_test_components.append(i["serialNumber"])
+            existing_test_components.append(i["id"])
             p=p+1
     
     print("Deleting",len(existing_test_components),"test components")

@@ -10,6 +10,7 @@ def remove_component(client, serialNumber):
            "component": serialNumber
         }
         component = client.get("getComponent", json=search_filter)
+        print(component["id"])
         while True:
             try:
                 print("Retrieved existing component with serial number", component["serialNumber"], ", Are you sure you want to delete it? (y or n)")
@@ -18,7 +19,7 @@ def remove_component(client, serialNumber):
                 del_ans = input("\nReason: ")
                 if ans == "yes" or ans == "y":
                     del_filter = {
-                        "component": serialNumber,
+                        "component": component['id'],
                         "reason": del_ans
                     }
                     client.post("deleteComponent",json=del_filter)
@@ -39,8 +40,8 @@ def remove_component(client, serialNumber):
                 "component": serial
             })
         components = []
-        for filter in search_filter:
-            components.append(client.get("getComponent", json=filter))
+        for filt in search_filter:
+            components.append(client.get("getComponent", json=filt))
         print("Successfully retrieved all enquired components!")
         while True:
             try:
@@ -50,9 +51,9 @@ def remove_component(client, serialNumber):
                     print("What is the reason for deletion?")
                     del_reason = input("\nReason: ")
                     delete_filter = []
-                    for serial in serialNumber:
+                    for comp in components:
                         delete_filter.append({
-                            "component": serial,
+                            "component": comp['id'],
                             "reason": del_reason
                         }) 
                     for filter in delete_filter:
