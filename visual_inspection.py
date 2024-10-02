@@ -92,7 +92,7 @@ def upload_reception_results(client,meta_data,template):
   return test_results, upload
     
 def main():
-    eos = check_file_size(args)
+     = check_file_sizeeos(args)
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
     single = True
