@@ -93,11 +93,11 @@ def get_code_and_function(component):
 
 
 def get_production_status():
-    status_list = ["Pre-Production", "Production","Dummy"]
+    status_list = ["Prototype","Pre-Production", "Production","Dummy"]
     status_num = [0,1,9]
     counter = 0
     for k, v in enumerate(status_list):
-        if k == 2:
+        if k == 3:
             k = 9
         print(f"For {v}, press {k}")
     while True:
@@ -115,7 +115,7 @@ def get_production_status():
             if counter %3 ==0:
                 print("")
                 for k, v in enumerate(status_list):
-                    if k == 2:
+                    if k == 3:
                           k = 9
                     print(f"For {v}, press {k}")
 

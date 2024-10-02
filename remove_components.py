@@ -10,7 +10,6 @@ def remove_component(client, serialNumber):
            "component": serialNumber
         }
         component = client.get("getComponent", json=search_filter)
-        print(component["id"])
         while True:
             try:
                 print("Retrieved existing component with serial number", component["serialNumber"], ", Are you sure you want to delete it? (y or n)")

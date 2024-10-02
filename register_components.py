@@ -44,10 +44,12 @@ def upload_component(client,component, serialNumber):
             print("Uploading new component...")
             client.post('registerComponent',json=new_component)
             print("Done!")
+            local = True
         else:
             print("Exiting...")
+            local = False
             #exit
-        return new_component
+        return new_component, local
     else:
         ''' retrieve component template to save'''
         project = serialNumber[0][3]
@@ -159,8 +161,9 @@ def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     meta_data = get_data(itkdb_client)
-    component = upload_component(itkdb_client,meta_data[0],meta_data[1])
-    upload_component_local(mongodb_client,component)
+    component,local = upload_component(itkdb_client,meta_data[0],meta_data[1])
+    if local == True:
+        upload_component_local(mongodb_client,component)
 
 if __name__ == '__main__':
   main()
