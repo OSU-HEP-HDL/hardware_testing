@@ -94,7 +94,7 @@ def get_code_and_function(component):
 
 def get_production_status():
     status_list = ["Prototype","Pre-Production", "Production","Dummy"]
-    status_num = [0,1,9]
+    status_num = [0,1,2,9]
     counter = 0
     for k, v in enumerate(status_list):
         if k == 3:
