@@ -2,6 +2,7 @@ pymongo
 numpy
 pandas
 itkdb
+itkdb[eos]
 openhtf
 PyQt6
 segno
