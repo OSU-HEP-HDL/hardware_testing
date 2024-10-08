@@ -1,6 +1,6 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry,update_test_type,upload_attachments,check_file_size
-from modules.mongo_db import upload_results_locally
+from modules.mongo_db import upload_results_locally, scp_transfer
 import itkdb
 import shutil
 import argparse
@@ -183,6 +183,7 @@ def main():
     eos = check_file_size(args)
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
+    proxmox_auth = authenticate_user_proxmox()
     if not enquiry(args["results"]):
       print("No folder argument included! Exiting...")
       exit()
@@ -195,6 +196,8 @@ def main():
     update_test_type(itkdb_client,mongodb_client,meta_data,test_type)
     test_results = upload_signal_integrity_test(itkdb_client,template,meta_data,values,images)
     upload_attachments(itkdb_client,args,meta_data,test_type)
+    local_path = scp_transfer(proxmox_auth,args,meta_data,test_type)
+    test_results["File_Location"] = local_path
     upload_results_locally(mongodb_client,test_results,serial_number,test_type)
 
 

@@ -6,3 +6,4 @@ itkdb[eos]
 openhtf
 PyQt6
 segno
+paramiko

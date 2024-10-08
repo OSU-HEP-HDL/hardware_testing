@@ -31,7 +31,8 @@ def enquiry(list):
         return 1
 
 def check_file_size(args):
-    eos = False
+    eos = True
+    '''
     img_str = ["png","jpg","jpeg","pdf","eps","gif"]
     for arg_key, value in args.items():
         key = arg_key
@@ -42,7 +43,7 @@ def check_file_size(args):
                 eos = True
         if size > 64000:
             eos = True
-    
+    '''
     return eos
 
 def get_component_type():
@@ -289,8 +290,7 @@ def upload_attachments(client,attch,meta_data,test_type):
    if "/" in attch[key][0]:
       for image in attch[key]:
          g = image.split("/")
-         glen = len(g)
-         img_name = g[glen-1]
+         img_name = g[-1]
          shutil.copy2(image, img_name)
          altered_attch_list.append(img_name)
    

@@ -22,3 +22,7 @@ echo "ITKDB_AUTH_URL=https://uuidentity.plus4u.net/uu-oidc-maing02/bb977a99f4cc4
 echo "ITKDB_API_URL=https://itkpd-test.unicorncollege.cz/" >> .env
 echo "ITKDB_CASSETTE_LIBRARY_DIR=tests/integration/cassettes" >> .env
 echo "LOCAL_ADDRESS=\"docker.dhcp.okstate.edu:27017\"" >> .env
+echo "LOCAL_PROXMOX_HOST="10.206.65.222"" >> .env
+echo "LOCAL_PROXMOX_USER="smb"" >> .env
+echo "LOCAL_PROXMOX_PASSWORD="osuhep"" >> .env
+echo "LOCAL_PROXMOX_PORT="22"" >> .env

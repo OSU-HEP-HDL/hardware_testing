@@ -48,7 +48,6 @@ def upload_component(client,component, serialNumber):
         else:
             print("Exiting...")
             local = False
-            #exit
         return new_component, local
     else:
         ''' retrieve component template to save'''
@@ -92,9 +91,11 @@ def upload_component(client,component, serialNumber):
                 #print(new_component)
                 client.post('registerComponent',json=new_component)
             print("Done!")
+            local = True
         else:
             print("Not uploading to the production database...")
-        return component_list
+            local = False
+        return component_list,local
         
 def upload_component_local(client,component):
     db = client["local"]["itk_testing"]
@@ -106,6 +107,7 @@ def upload_component_local(client,component):
             purpose,type_combination,vendor = insert_property_names(comp)
             updated_component = {
                 **comp,
+                'stage': 'RECEPTION',
                 'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor},
                 '_id': comp["serialNumber"]
             }
@@ -116,10 +118,11 @@ def upload_component_local(client,component):
                     raise ValueError
                 else:
                     db.insert_one(updated_component)
-                    print("Uploaded components locally!")
+                    
             except ValueError:
                 print("Component with serial number",comp["serialNumber"],"already exists locally!")
                 exit
+        print("Uploaded components locally!")
     
     else:
         ''' Uploads a single component to local database '''

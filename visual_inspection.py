@@ -1,6 +1,6 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type,check_file_size
-from modules.mongo_db import upload_results_locally
+from modules.mongo_db import upload_results_locally,scp_transfer
 import argparse
 
 
@@ -92,9 +92,10 @@ def upload_reception_results(client,meta_data,template):
   return test_results, upload
     
 def main():
-     = check_file_sizeeos(args)
+    eos = check_file_size(args)
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
+    proxmox_auth = authenticate_user_proxmox()
     single = True
     test_type = "VISUAL_INSPECTION"
     serial_number = enter_serial_numbers(single)
@@ -106,7 +107,9 @@ def main():
     if enquiry(args["images"]) and upload == True:
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data,test_type)
+      image_path = scp_transfer(proxmox_auth,args,meta_data,test_type)
     if upload == True:
+      results["File_Location"] = image_path
       upload_results_locally(mongodb_client,results,serial_number,test_type)
     else:
        print("Not uploading results locally")

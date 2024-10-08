@@ -1,6 +1,6 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import get_comp_info, enter_serial_numbers, check_file_size
-from modules.mongo_db import insert_property_names
+from modules.mongo_db import insert_property_names,scp_transfer,upload_results_locally
 import itkdb
 import shutil
 import os
@@ -70,6 +70,7 @@ def main():
     eos = check_file_size(args)
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
+    proxmox_auth = authenticate_user_proxmox()
     single = True
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number)
@@ -87,5 +88,8 @@ def main():
             print("Invalid Input. Try again.")
     print(f"Selected {option}\n")
     upload_additional_attachments(itkdb_client,args,meta_data,option)
+    image_path = scp_transfer(proxmox_auth,args,meta_data)
+
+    
 if __name__ == '__main__':
   main()
