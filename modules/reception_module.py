@@ -93,71 +93,80 @@ def get_code_and_function(component):
     return xxyy
 
 
-def get_production_status():
+def get_production_status(status=''):
     status_list = ["Prototype","Pre-Production", "Production","Dummy"]
     status_num = [0,1,2,9]
     counter = 0
-    for k, v in enumerate(status_list):
-        if k == 3:
-            k = 9
-        print(f"For {v}, press {k}")
-    while True:
-        try:  
-            selection = input("\nInput Selection: ")
-            if int(selection) in status_num:
-                status = selection
-            else:
-                raise ValueError
-            break
-        
-        except(ValueError,IndexError):
-            print("Invalid Input. Try again.")
-            counter = counter +1
-            if counter %3 ==0:
-                print("")
-                for k, v in enumerate(status_list):
-                    if k == 3:
-                          k = 9
-                    print(f"For {v}, press {k}")
+    if status =='':
+        for k, v in enumerate(status_list):
+            if k == 3:
+                k = 9
+            print(f"For {v}, press {k}")
+        while True:
+            try:  
+                selection = input("\nInput Selection: ")
+                if int(selection) in status_num:
+                    status = selection
+                else:
+                    raise ValueError
+                break
+            
+            except(ValueError,IndexError):
+                print("Invalid Input. Try again.")
+                counter = counter +1
+                if counter %3 ==0:
+                    print("")
+                    for k, v in enumerate(status_list):
+                        if k == 3:
+                            k = 9
+                        print(f"For {v}, press {k}")
 
 
-    print(f"Selected {status}\n")
+        print(f"Selected {status}\n")
+    else: 
+        selection = status_num[status_list.index(status)]
+
     return selection
 
-def get_N2():
+def get_N2(selection_1='',selection_2=''):
     '''
     N2 is a value in the serial number which is dependent on component placement and the number of modules on the component.
     This gives the user a selection for both component placement and # modules.
     Returns N2
     '''
-    print("Select Component Placement.")
     placement_options = ["BARREL", "RING"]
-    for k, v in enumerate(placement_options):
-        print(f"For {v}, press {k}")
-    while True:
-        try:
-            selection_1 = input("\nInput Selection: ")
-            placement = placement_options[int(selection_1)]
-            break
-        except (ValueError, IndexError):
-            print("Invalid Input. Try again.")
-    print(f"Selected {placement}\n")
-
-    print("Select Number of Modules")
     module_types = ["TRIPLET", "QUAD", "BOTH"]
-    for k, v in enumerate(module_types):
-        print(f"For {v}, press {k}")
-    while True:
-        try:
-            selection_2 = input("\nInput Selection: ")
-            n_modules = module_types[int(selection_2)]
-            if int(selection_1) == 0 and int(selection_2) == 2:
-                print("Error: You've selected BARREL and BOTH. Only RINGS are BOTH. Try again.")
-                raise ValueError
-            break
-        except (ValueError, IndexError):
-            print("Invalid Input. Try again.")
-    print(f"Selected {n_modules}\n")
+    if selection_1 == '' and selection_2 == '':
+        print("Select Component Placement.")
+       
+        for k, v in enumerate(placement_options):
+            print(f"For {v}, press {k}")
+        while True:
+            try:
+                selection_1 = input("\nInput Selection: ")
+                placement = placement_options[int(selection_1)]
+                break
+            except (ValueError, IndexError):
+                print("Invalid Input. Try again.")
+        print(f"Selected {placement}\n")
+
+        print("Select Number of Modules")
+        for k, v in enumerate(module_types):
+            print(f"For {v}, press {k}")
+        while True:
+            try:
+                selection_2 = input("\nInput Selection: ")
+                n_modules = module_types[int(selection_2)]
+                if int(selection_1) == 0 and int(selection_2) == 2:
+                    print("Error: You've selected BARREL and BOTH. Only RINGS are BOTH. Try again.")
+                    raise ValueError
+                break
+            except (ValueError, IndexError):
+                print("Invalid Input. Try again.")
+        print(f"Selected {n_modules}\n")
+    else:
+        selection_1 = placement_options.index(selection_1)
+        selection_2 = module_types.index(selection_2)
 
     if int(selection_1) == 0:
         if int(selection_2) == 0:
