@@ -37,7 +37,7 @@ Otherwise,
 ```
 python register_components_ui.py -t 'DATA FLEX' -s Dummy -pl BARREL -m TRIPLET -f 2 -v Vector -b n
 ```
-
+---------------------------------------------------------------------
 The options for each argument that should be in included in the drop down menues on the UI are as follows:
 
 | TYPE | STATUS | PLACEMENT | MODULES | FLAVOR | VENDOR | BATCH | BATCH SIZE |
