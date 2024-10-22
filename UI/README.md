@@ -26,12 +26,13 @@ options:
   -bs BATCH_SIZE, --batch_size BATCH_SIZE
                         Batch Size (integer)
 ```
-
+---------------------------------------------------------------------
+Here's an example:
 ```
 python register_components_ui.py -t 'DATA FLEX' -s Dummy -pl BARREL -m TRIPLET -f 2 -v Vector -b y -bs 2
 ```
 
-The argument ```-bs or --batch_size``` is optional but is required **IF** you are entering a batch, ```-b y --batch y```.
+The argument `-bs or --batch_size` is optional but is required **IF** you are entering a batch, `-b y --batch y`.
 Otherwise,
 ```
 python register_components_ui.py -t 'DATA FLEX' -s Dummy -pl BARREL -m TRIPLET -f 2 -v Vector -b n
