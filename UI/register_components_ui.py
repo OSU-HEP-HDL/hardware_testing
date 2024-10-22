@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status
+from modules.reception_module_ui import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status
 from modules.mongo_db import insert_property_names
 import datetime
 import json
@@ -9,13 +9,16 @@ parser = argparse.ArgumentParser(description="Register Component for UI. Takes a
 parser.add_argument("-t",'--type',type=str,required=True,help="Component Type, ex. DATA FLEX ")
 parser.add_argument("-s",'--status',type=str,required=True,help="Component Status, ex. Pre-Production ")
 parser.add_argument("-pl",'--placement',type=str,required=True,help="Component Placement, ex. Barrel or Ring ")
-parser.add_argument("-m",'--modules',type=str,required=True,help="Number of Modules, ex. TRIPLET")
+parser.add_argument("-m",'--module',type=str,required=True,help="Module Type, ex. TRIPLET")
 parser.add_argument("-f",'--flavor',type=str,required=True,help="Component Flavor")
+parser.add_argument("-v","--vendor",type=str,required=True,help="Vendor Name, ex. Altaflex ")
+parser.add_argument("-b","--batch",type=str,required=True,help="Batch boolean (y or n)")
+parser.add_argument("-bs","--batch_size",type=int,required=False,help="Batch Size (integer)")
 
 args = vars(parser.parse_args())
 
 
-def upload_component(client,component, serialNumber):
+def upload_component(client,component, serialNumber,vendor):
     ''' This is for a single component upload'''
     if isinstance(serialNumber,str):
         ''' retrieve component template to save'''
@@ -32,12 +35,16 @@ def upload_component(client,component, serialNumber):
         flavor = serialNumber[9]
 
         
-        print("\nWho is the vendor?")
+        #print("\nWho is the vendor?")
         vendor_list = ["Altaflex","PFC","Cirexx","EPEC","Vector","Summit"]
-        for k, v in enumerate(vendor_list):
-            print(f"For {v}, press {k}")
-        vendor = input("\nInput Selection: ") 
-      
+        #for k, v in enumerate(vendor_list):
+        #    print(f"For {v}, press {k}")
+        #vendor = input("\nInput Selection: ") 
+        try:
+            vendor = str(vendor_list.index(vendor))
+        except ValueError:
+            print(f"Vendor '{vendor}' not found in vendor list.")
+
         new_component = {
             **component_template,
             "subproject": subproject,
@@ -47,16 +54,16 @@ def upload_component(client,component, serialNumber):
             "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor}
         }
 
-        print("You are uploading a new", component,"with serial number", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
-        answer = input("\nInput Selection: ")
-        if answer == "y" or answer == "yes":
-            print("Uploading new component...")
-            client.post('registerComponent',json=new_component)
-            print("Done!")
-            local = True
-        else:
-            print("Exiting...")
-            local = False
+        #print("You are uploading a new", component,"with serial number", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
+        #answer = input("\nInput Selection: ")
+        #if answer == "y" or answer == "yes":
+        #    print("Uploading new component...")
+        client.post('registerComponent',json=new_component)
+        #    print("Done!")
+        local = True
+        #else:
+        #    print("Exiting...")
+        #    local = False
         return new_component, local
     else:
         ''' retrieve component template to save'''
@@ -74,15 +81,18 @@ def upload_component(client,component, serialNumber):
         type_combination = serialNumber[0][8]
         flavor = serialNumber[0][9]
 
-        
-        print("\nWho is their vendor?")
+        #print("\nWho is their vendor?")
         vendor_list = ["Altaflex","PFC","Cirexx","EPEC","Vector","Summit"]
-        for k, v in enumerate(vendor_list):
-            print(f"For {v}, press {k}")
-        vendor = input("\nInput Selection: ") 
+        try:
+            vendor = str(vendor_list.index(vendor))
+        except ValueError:
+            print(f"Vendor '{vendor}' not found in vendor list.")
+        #for k, v in enumerate(vendor_list):
+        #    print(f"For {v}, press {k}")
+        #input("\nInput Selection: ") 
 
-        print("You are uploading",str(len(serialNumber)),"new", component, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
-        answer = input("\nInput Selection: ")
+        #print("You are uploading",str(len(serialNumber)),"new", component, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
+        answer = "yes"#input("\nInput Selection: ")
 
         if answer == "y" or answer == "yes":
             print("Uploading new components...")
@@ -108,7 +118,7 @@ def upload_component(client,component, serialNumber):
         
 def upload_component_local(client,component):
     db = client["local"]["itk_testing"]
-    print("Uploading to local database...")
+    #print("Uploading to local database...")
 
     ''' This is for a batch of components to upload locally'''
     if isinstance(component,list):
@@ -150,13 +160,13 @@ def upload_component_local(client,component):
                 raise ValueError
             else:
                 db.insert_one(updated_component)
-                print("Uploaded component locally!")
+                #print("Uploaded component locally!")
         except ValueError:
             print("Component already exists locally!")
             exit
         print("Component uploaded to local database successfully!")
 
-def get_data(itkdb_client):
+def get_data(itkdb_client,batch,batch_size):
     register = True
     print(args)
     comp_selection = args['type']
@@ -165,18 +175,28 @@ def get_data(itkdb_client):
     N2 = get_N2(args['placement'],args['modules'])
     comp_type = get_type(xxyy,N2)
     flavor = args['flavor']
-    atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type)
+    atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type,batch,batch_size)
 
     return comp_type, atlas_serial
 
 
 def main():
+    batch = args['batch']
+    vendor = args['vendor']
+    if (batch == "y" or batch == "yes") and args['batch_size'] is None:
+        print("Batch Size required to register a batch. Exiting...")
+        exit() 
+
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
-    meta_data = get_data(itkdb_client)
-    #component,local = upload_component(itkdb_client,meta_data[0],meta_data[1])
-    #if local == True:
-    #    upload_component_local(mongodb_client,component)
+
+    if args['batch_size']:
+        batch_size = args['batch_size']
+
+    meta_data = get_data(itkdb_client,batch,batch_size)
+    component,local = upload_component(itkdb_client,meta_data[0],meta_data[1],vendor)
+    if local == True:
+        upload_component_local(mongodb_client,component)
 
 if __name__ == '__main__':
   main()

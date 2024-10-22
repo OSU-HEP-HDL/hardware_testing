@@ -223,9 +223,12 @@ def remove_component_proxmox(proxmox_auth, serialNumber,meta_data):
                 exists = check_directory_exists(sftp, remote_path, serial)
                 if exists == True:
                     remove_remote_directory(sftp,remote_path)
+                    success = True
             except ValueError:
                 print("Component with serial number",serial,"not found on proxmox!")
-        print("Component batch deleted on proxmox successfully!")
+                success = False
+        if success == True:
+            print("Component batch deleted on proxmox successfully!")
 
     # Close the SFTP session and SSH connection
     sftp.close()
