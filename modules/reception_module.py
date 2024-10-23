@@ -1,4 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from openpyxl import Workbook
 import itkdb
 import datetime
 import segno
@@ -45,6 +46,15 @@ def check_file_size(args):
             eos = True
     '''
     return eos
+
+def create_excel(serialNumbers):
+    wb = Workbook()
+    ws = wb.active
+    for idx, value in enumerate(serialNumbers, start=1):
+        ws.cell(row=idx, column=1, value=value)
+    wb.save("serialNumbers.xlsx")
+
+    print("Excel workbook created and serial numbers added.")
 
 def get_component_type():
     comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY", "PPO"]
@@ -556,8 +566,13 @@ def get_existing_serials(client,partial_serial,xxyy,N2,flavor):
     else:
         print("Total components of type", comp_type,"found is:",existing_components.total)
 
+    production_status = partial_serial[7] 
+    status_list = ["Prototype","Pre-Production", "Production","Dummy"]
+    prod_status = 3 if int(production_status) == 9 else production_status
+    status = status_list[prod_status]
+
     existing_osu_components = []
-    existing_components_flavor = []
+    existing_components_status_flavor = []
     for i in existing_components:
         '''For deleted components'''
         if i['state'] == "deleted":
@@ -565,12 +580,12 @@ def get_existing_serials(client,partial_serial,xxyy,N2,flavor):
         code = str(i["institution"]["code"])
         if code == str("OSU"):
             existing_osu_components.append(i)
-            if i["serialNumber"][9] == str(flavor):
-                 existing_components_flavor.append(i)
-    print("Total components of type", comp_type," with flavor", flavor, "is",len(existing_components_flavor))
+            if i["serialNumber"][9] == str(flavor) and i['serialNumber'][7]:
+                 existing_components_status_flavor.append(i)
+    print("Total components of type", comp_type," of status",status," with flavor", flavor, "is",len(existing_components_status_flavor))
 
     existing_serials = []
-    for component in existing_components_flavor:
+    for component in existing_components_status_flavor:
         if partial_serial in component["serialNumber"]:
             existing_serials.append(component["serialNumber"])
         elif component["serialNumber"] is None:
@@ -588,6 +603,10 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
     project = xxyy[0]
     subproject1 = xxyy[0:2]
     subproject2 = xxyy[2:4]
+
+    status_list = ["Prototype","Pre-Production", "Production","Dummy"]
+    prod_status = 3 if int(production_status) == 9 else production_status
+    status = status_list[prod_status]
 
     #comp_type = get_type(xxyy,N2)
     print("The component type you're entering is:", comp_type)
@@ -607,7 +626,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
         print("Total components of type", comp_type,"found is:",existing_components.total)
 
     existing_osu_components = []
-    existing_components_flavor = []
+    existing_components_status_flavor = []
     for i in existing_components:
         
         ''' For deleted components '''
@@ -617,12 +636,12 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
         code = str(i["institution"]["code"])
         if code == str("OSU"):
             existing_osu_components.append(i)
-            if i["serialNumber"][9] == str(flavor):
-                 existing_components_flavor.append(i)
-    print("Total components of type", comp_type," with flavor", flavor, "is",len(existing_components_flavor))
+            if i["serialNumber"][9] == str(flavor) and i["serialNumber"][7] == str(production_status):
+                 existing_components_status_flavor.append(i)
+    print("Total components of type", comp_type,"of status",status,"with flavor", flavor, "is",len(existing_components_status_flavor))
 
     existing_serials = []
-    for component in existing_components_flavor:
+    for component in existing_components_status_flavor:
         if partial_serial in component["serialNumber"]:
             existing_serials.append(component["serialNumber"])
         elif component["serialNumber"] is None:

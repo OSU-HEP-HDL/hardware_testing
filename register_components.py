@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel
 from modules.mongo_db import insert_property_names
 import datetime
 import json
@@ -167,6 +167,11 @@ def main():
     component,local = upload_component(itkdb_client,meta_data[0],meta_data[1])
     if local == True:
         upload_component_local(mongodb_client,component)
-
+    print("Create excel of serial numbers?")
+    ans = input("\nAnswer (y or n): ")
+    if ans == "y" or ans == "yes":
+        create_excel(meta_data[1])
+    else:
+        print("Fin")
 if __name__ == '__main__':
   main()
