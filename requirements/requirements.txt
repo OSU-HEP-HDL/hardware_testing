@@ -7,3 +7,4 @@ openhtf
 PyQt6
 segno
 paramiko
+openpyxl
