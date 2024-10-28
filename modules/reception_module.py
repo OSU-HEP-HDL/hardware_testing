@@ -605,7 +605,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
     subproject2 = xxyy[2:4]
 
     status_list = ["Prototype","Pre-Production", "Production","Dummy"]
-    prod_status = 3 if int(production_status) == 9 else production_status
+    prod_status = 3 if int(production_status) == 9 else int(production_status)
     status = status_list[prod_status]
 
     #comp_type = get_type(xxyy,N2)
