@@ -172,7 +172,7 @@ def get_data(itkdb_client,batch,batch_size):
     comp_selection = args['type']
     xxyy = get_code_and_function(comp_selection)
     production_status = get_production_status(args['status'])
-    N2 = get_N2(args['placement'],args['modules'])
+    N2 = get_N2(args['placement'],args['module'])
     comp_type = get_type(xxyy,N2)
     flavor = args['flavor']
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type,batch,batch_size)
@@ -192,6 +192,8 @@ def main():
 
     if args['batch_size']:
         batch_size = args['batch_size']
+    else:
+        batch_size = 0
 
     meta_data = get_data(itkdb_client,batch,batch_size)
     component,local = upload_component(itkdb_client,meta_data[0],meta_data[1],vendor)
