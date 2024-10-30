@@ -451,12 +451,14 @@ def format_number(latest_serial,existing_serials,register):
                 if register == True:
                     print("The recommended number to enter is:", int(latest_serial)+1)
                 while True:
-                    print("Enter a number for the component (0 to 9999)")
+                    print("Enter a number for the component (1 to 9999)")
                     number = input("\nInput Selection: ")
                     num = int(number)
                     if register == True:
                         try:
                             if '{:04d}'.format(num) in existing_serial_list:
+                                raise ValueError
+                            elif num == 0:
                                 raise ValueError
                             else:
                                 break
@@ -568,7 +570,7 @@ def get_existing_serials(client,partial_serial,xxyy,N2,flavor):
 
     production_status = partial_serial[7] 
     status_list = ["Prototype","Pre-Production", "Production","Dummy"]
-    prod_status = 3 if int(production_status) == 9 else production_status
+    prod_status = 3 if int(production_status) == 9 else int(production_status)
     status = status_list[prod_status]
 
     existing_osu_components = []
