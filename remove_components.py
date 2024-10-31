@@ -219,15 +219,15 @@ def remove_component_proxmox(proxmox_auth, serialNumber,meta_data):
         for serial, data in zip(serialNumber,meta_data):
             comp_info = data["type"]+"/"+serial
             remote_path = "/mnt/proxmox/images/itk_testing/"+comp_info
+            success = False
             try:
                 exists = check_directory_exists(sftp, remote_path, serial)
-                if exists == True:
+                if exists:
                     remove_remote_directory(sftp,remote_path)
                     success = True
             except ValueError:
                 print("Component with serial number",serial,"not found on proxmox!")
-                success = False
-        if success == True:
+        if success:
             print("Component batch deleted on proxmox successfully!")
 
     # Close the SFTP session and SSH connection
