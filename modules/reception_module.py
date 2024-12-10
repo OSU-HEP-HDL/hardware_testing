@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import shutil
+import itksn
 
 def prepend(list, str):
     # Using format()
@@ -46,6 +47,13 @@ def check_file_size(args):
             eos = True
     '''
     return eos
+
+def check_sn(serialNumber):
+    
+    result = itksn.parse(serialNumber.encode("utf-8"))
+    print(result)
+
+    return result
 
 def create_excel(serialNumbers):
     wb = Workbook()
@@ -144,7 +152,7 @@ def get_N2(selection_1='',selection_2=''):
     This gives the user a selection for both component placement and # modules.
     Returns N2
     '''
-    placement_options = ["BARREL", "RING"]
+    placement_options = ["BARREL", "RING","R0.5"]
     module_types = ["TRIPLET", "QUAD", "BOTH"]
     if selection_1 == '' and selection_2 == '':
         print("Select Component Placement.")
@@ -190,14 +198,48 @@ def get_N2(selection_1='',selection_2=''):
             N2 = 3
         if int(selection_2) == 2:
             N2 = 4
+    elif int(selection_1) == 2:
+        r05_list = ["INTERMEDIATE RING","R0.5 DATA FLEX"]
+        for k, v in enumerate(r05_list):
+            print(f"For {v}, press {k}")
+        selection_3 = input("\ninput selection: ")
+        if int(selection_3) == 0:
+            N2 = 2
+        if int(selection_3) == 1:
+            N2 = 5
     return N2
 
-def get_flavor():
+def get_flavor(comp_type):
     '''
     Prompts user to select the flavor of component.
     '''
     print("Select Component Flavor.")
-    flavor_options = [0, 1, 2, 3, 4]
+    if comp_type == "L0_BARREL_DATA_FLEX":
+        flavor_options = [0]
+    if comp_type == "L0_BARREL_POWER_FLEX":
+        flavor_options = [0]
+    if comp_type == "L1_BARREL_DATA_FLEX":
+        flavor_options = [0, 1, 2, 3, 4]
+    if comp_type == "L1_BARREL_POWER_FLEX":
+        flavor_options = [1, 2]
+    if comp_type == "INTERMEDIATE_RING":
+        flavor_options = [0]
+    if comp_type == "QUAD_RING_R1":
+        flavor_options = [0]
+    if comp_type == "COUPLED_RING_R01":
+        flavor_options = [0]
+    if comp_type == "QUAD_MODULE_Z_RAY_FLEX":
+        flavor_options = [0]
+    if comp_type == "TYPE0_TO_PP0":
+        flavor_options = [1, 2]
+    if comp_type == "R0_POWER_JUMPER":
+        flavor_options = [1]
+    if comp_type == "R0_POWER_T":
+        flavor_options = [0]
+    if comp_type == "R0_DATA_FLEX":
+        flavor_options = [1, 2, 3]
+    if comp_type == "R05_DATA_FLEX":
+        flavor_options = [1, 2]
     for k, v in enumerate(flavor_options):
         print(f"For {v}, press {k}")
     while True:

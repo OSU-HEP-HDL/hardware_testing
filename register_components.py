@@ -1,5 +1,5 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel,check_sn
 from modules.mongo_db import insert_property_names
 import datetime
 import json
@@ -154,7 +154,7 @@ def get_data(itkdb_client):
     production_status = get_production_status()
     N2 = get_N2()
     comp_type = get_type(xxyy,N2)
-    flavor = get_flavor()
+    flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type)
 
     return comp_type, atlas_serial
@@ -164,6 +164,8 @@ def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     meta_data = get_data(itkdb_client)
+    check = check_sn(meta_data[1])
+ 
     component,local = upload_component(itkdb_client,meta_data[0],meta_data[1])
     if local == True:
         upload_component_local(mongodb_client,component)

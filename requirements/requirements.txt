@@ -3,6 +3,7 @@ numpy
 pandas
 itkdb
 itkdb[eos]
+itksn
 openhtf
 PyQt6
 segno
