@@ -82,7 +82,8 @@ def get_data():
     xxyy = get_code_and_function(comp_selection)
     production_status = get_production_status()
     N2 = get_N2()
-    flavor = get_flavor()
+    comp_type = get_type(xxyy,N2)
+    flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(xxyy, production_status, N2, flavor)
     #print("Final ATLAS Serial Number(s): ", atlas_serial)
     return atlas_serial
