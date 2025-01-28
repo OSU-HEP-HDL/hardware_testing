@@ -4,10 +4,7 @@ __pycache__/*
 .webcache/*
 .DS_Store
 image.png
-tesing
 testing/*
-HTF_test.py
 results/
 labels/
-buttons.py
 local_db.py
