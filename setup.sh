@@ -1,4 +1,5 @@
 #!/bin/bash
+rm .env
 mkdir ./results
 mkdir ./labels
 source testing/bin/activate
