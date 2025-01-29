@@ -1,12 +1,12 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel,check_sn
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel,check_sn, get_alternative_serial
 from modules.mongo_db import insert_property_names
 import datetime
 import json
 
 
 
-def upload_component(client,component, serialNumber):
+def upload_component(client,component, serialNumber,alternative_serial):
     ''' This is for a single component upload'''
     if isinstance(serialNumber,str):
         ''' retrieve component template to save'''
@@ -28,16 +28,16 @@ def upload_component(client,component, serialNumber):
         for k, v in enumerate(vendor_list):
             print(f"For {v}, press {k}")
         vendor = input("\nInput Selection: ") 
-      
+        
         new_component = {
             **component_template,
             "subproject": subproject,
             "institution": "OSU",
             "type": component,
             "serialNumber": serialNumber,
-            "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor}
+            "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor,"ALTERNATIVE_IDENTIFIER": alternative_serial}
         }
-
+        
         print("You are uploading a new", component,"with serial number", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
         answer = input("\nInput Selection: ")
         if answer == "y" or answer == "yes":
@@ -48,6 +48,18 @@ def upload_component(client,component, serialNumber):
         else:
             print("Exiting...")
             local = False
+        
+        search_filter = {
+        "filterMap":{
+            "project": project,
+            "subproject": subproject,
+            "type": component,
+            "institute": "OSU",
+            "serialNumber": serialNumber
+        }
+        }
+        posted_component = client.get("listComponents", json=search_filter)
+        print(posted_component)
         return new_component, local
     else:
         ''' retrieve component template to save'''
@@ -156,8 +168,9 @@ def get_data(itkdb_client):
     comp_type = get_type(xxyy,N2)
     flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type)
+    alternative_serial = get_alternative_serial()
 
-    return comp_type, atlas_serial
+    return comp_type, atlas_serial, alternative_serial
 
 
 def main():
@@ -166,7 +179,7 @@ def main():
     meta_data = get_data(itkdb_client)
     check = check_sn(meta_data[1])
  
-    component,local = upload_component(itkdb_client,meta_data[0],meta_data[1])
+    component,local = upload_component(itkdb_client,meta_data[0],meta_data[1],meta_data[2])
     if local == True:
         upload_component_local(mongodb_client,component)
     print("Create excel of serial numbers?")

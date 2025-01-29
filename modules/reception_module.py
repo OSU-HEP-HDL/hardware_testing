@@ -55,6 +55,10 @@ def check_sn(serialNumber):
 
     return result
 
+def get_alternative_serial():
+    alt_serial = input("Enter alternative serial number: ")
+    return alt_serial
+
 def create_excel(serialNumbers):
     wb = Workbook()
     ws = wb.active
@@ -664,6 +668,7 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
         }
     }
     existing_components = client.get("listComponents", json=search_filter)
+
     if isinstance(existing_components,list):
         print("Total components of type", comp_type,"found is:",len(existing_components))
     else:
