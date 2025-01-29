@@ -1,7 +1,7 @@
 pymongo
 numpy
 pandas
-itkdb
+itkdb==0.6.12
 itkdb[eos]
 itksn
 openhtf
@@ -9,3 +9,4 @@ PyQt6
 segno
 paramiko
 openpyxl
+cachecontrol==0.14.1
