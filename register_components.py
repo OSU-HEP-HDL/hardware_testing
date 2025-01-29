@@ -90,14 +90,14 @@ def upload_component(client,component, serialNumber,alternative_serial):
         if answer == "y" or answer == "yes":
             print("Uploading new components...")
             component_list = []
-            for serial in serialNumber:
+            for serial,alt in zip(serialNumber,alternative_serial):
                 new_component = {
                     **component_template,
                     "subproject": subproject,
                     "institution": "OSU",
                     "type": component,
                     "serialNumber": serial,
-                    "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor}
+                    "properties": {**component_template['properties'], "PURPOSE": purpose, "TYPE_COMBINATION":type_combination,"FLAVOR":flavor, "VENDOR": vendor,"ALTERNATIVE_IDENTIFIER": alt}
                 }
                 component_list.append(new_component)
                 #print(new_component)
@@ -168,7 +168,7 @@ def get_data(itkdb_client):
     comp_type = get_type(xxyy,N2)
     flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type)
-    alternative_serial = get_alternative_serial()
+    alternative_serial = get_alternative_serial(atlas_serial)
 
     return comp_type, atlas_serial, alternative_serial
 
@@ -185,7 +185,7 @@ def main():
     print("Create excel of serial numbers?")
     ans = input("\nAnswer (y or n): ")
     if ans == "y" or ans == "yes":
-        create_excel(meta_data[1])
+        create_excel(meta_data[1],meta_data[2])
     else:
         print("Fin")
 if __name__ == '__main__':

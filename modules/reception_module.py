@@ -49,21 +49,37 @@ def check_file_size(args):
     return eos
 
 def check_sn(serialNumber):
-    
-    result = itksn.parse(serialNumber.encode("utf-8"))
-    print(result)
+    try:
+        if isinstance(serialNumber, list):
+            result = [itksn.parse(serial.encode("utf-8")) for serial in serialNumber]
+        else:
+            result = itksn.parse(serialNumber.encode("utf-8"))
+            print(result)
 
-    return result
+        print("Serial Numbers checked successfully!")
+        return result
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
-def get_alternative_serial():
-    alt_serial = input("Enter alternative serial number: ")
+def get_alternative_serial(serial):
+    if isinstance(serial, list):
+        print("Enter alternative serial numbers...")
+        alt_serial = []
+        for i in range(len(serial)):
+            enter_serial = input("Enter number: ")
+            alt_serial.append(enter_serial)
+    else:
+        alt_serial = input("Enter alternative serial number: ")
+
     return alt_serial
 
-def create_excel(serialNumbers):
+def create_excel(serialNumbers,alternative_serials):
     wb = Workbook()
     ws = wb.active
     for idx, value in enumerate(serialNumbers, start=1):
         ws.cell(row=idx, column=1, value=value)
+        ws.cell(row=idx, column=2, value=alternative_serials[idx-1])
     wb.save("serialNumbers.xlsx")
 
     print("Excel workbook created and serial numbers added.")
