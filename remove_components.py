@@ -103,7 +103,7 @@ def get_data(itkdb_client):
     production_status = get_production_status()
     N2 = get_N2()
     comp_type = get_type(xxyy,N2)
-    flavor = get_flavor()
+    flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor,register,comp_type)
 
     return comp_type, atlas_serial
