@@ -239,7 +239,7 @@ def get_flavor(comp_type):
     if comp_type == "L0_BARREL_POWER_FLEX":
         flavor_options = [0]
     if comp_type == "L1_BARREL_DATA_FLEX":
-        flavor_options = [0, 1, 2, 3, 4]
+        flavor_options = [1, 2, 3, 4]
     if comp_type == "L1_BARREL_POWER_FLEX":
         flavor_options = [1, 2]
     if comp_type == "INTERMEDIATE_RING":
@@ -253,12 +253,14 @@ def get_flavor(comp_type):
     if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     if comp_type == "R0_POWER_JUMPER":
-        flavor_options = [1]
+        flavor_options = [0]
     if comp_type == "R0_POWER_T":
         flavor_options = [0]
     if comp_type == "R0_DATA_FLEX":
         flavor_options = [1, 2, 3]
     if comp_type == "R05_DATA_FLEX":
+        flavor_options = [1, 2]
+    if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     for k, v in enumerate(flavor_options):
         print(f"For {v}, press {k}")
