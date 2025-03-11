@@ -172,7 +172,7 @@ def get_N2(selection_1='',selection_2=''):
     This gives the user a selection for both component placement and # modules.
     Returns N2
     '''
-    placement_options = ["BARREL", "RING","R0.5"]
+    placement_options = ["BARREL", "Endcap"]
     module_types = ["TRIPLET", "QUAD", "BOTH"]
     if selection_1 == '' and selection_2 == '':
         print("Select Component Placement.")
@@ -215,18 +215,16 @@ def get_N2(selection_1='',selection_2=''):
         if int(selection_2) == 0:
             N2 = 2
         if int(selection_2) == 1:
-            N2 = 3
+            r05_list = ["R0 DATA FLEX","R0.5 DATA FLEX","INTERMEDIATE RING"]
+            for k, v in enumerate(r05_list):
+                print(f"For {v}, press {k}")
+            selection_3 = input("\ninput selection: ")
+            if int(selection_3) == 0 or int(selection_3) == 2:
+                N2 = 2
+            if int(selection_3) == 1:
+                N2 = 5
         if int(selection_2) == 2:
             N2 = 4
-    elif int(selection_1) == 2:
-        r05_list = ["INTERMEDIATE RING","R0.5 DATA FLEX"]
-        for k, v in enumerate(r05_list):
-            print(f"For {v}, press {k}")
-        selection_3 = input("\ninput selection: ")
-        if int(selection_3) == 0:
-            N2 = 2
-        if int(selection_3) == 1:
-            N2 = 5
     return N2
 
 def get_flavor(comp_type):
@@ -309,19 +307,9 @@ def get_type(xxyy, N2):
         print(f"Selected {r0}\n")
         comp_type = r0
     elif str(code) == "DP" and N2 == 2:
-        print("Select Component which R0 type.")
-        r0t_options = ["R0_DATA_FLEX","R05_DATA_FLEX"]
-        for k, v in enumerate(r0t_options):
-            print(f"For {v}, press {k}")
-        while True:
-            try:
-                selection = input("\nInput Selection: ")
-                r0t = r0t_options[int(selection)]
-                break
-            except (ValueError, IndexError):
-                print("Invalid Input. Try again.")
-        print(f"Selected {r0t}\n")
-        comp_type = r0t
+        comp_type = "R0_DATA_FLEX"
+    elif str(code) == "DP" and N2 == 5:
+        comp_type = "R05_DATA_FLEX"
     elif str(code) == "PG" and N2 == 4:
         comp_type = "TYPE0_TO_PP0"
     else:
