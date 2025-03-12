@@ -166,12 +166,13 @@ def get_production_status(status=''):
 
     return selection
 
-def get_N2(selection_1='',selection_2=''):
+def get_N2(xxyy,selection_1='',selection_2=''):
     '''
     N2 is a value in the serial number which is dependent on component placement and the number of modules on the component.
     This gives the user a selection for both component placement and # modules.
     Returns N2
     '''
+    code = xxyy[2:4]
     placement_options = ["BARREL", "Endcap"]
     module_types = ["TRIPLET", "QUAD", "BOTH"]
     if selection_1 == '' and selection_2 == '':
@@ -213,19 +214,38 @@ def get_N2(selection_1='',selection_2=''):
             N2 = 1
     elif int(selection_1) == 1:
         if int(selection_2) == 0:
-            N2 = 2
+            while True:
+                try:
+                    if code == "DP":
+                        r05_list = ["R0 DATA FLEX","R0.5 DATA FLEX"]
+                        for k, v in enumerate(r05_list):
+                            print(f"For {v}, press {k}")
+                        selection_3 = input("\ninput selection: ")
+                        if int(selection_3) == 0 or int(selection_3) == 2:
+                            N2 = 2
+                        if int(selection_3) == 1:
+                            N2 = 5
+                    if code == "PP":
+                        N2 = 2
+                    if code == "RF":
+                        N2 = 2
+                    break
+                except ValueError:
+                    print("Invalid code. Try again.")
         if int(selection_2) == 1:
-            r05_list = ["R0 DATA FLEX","R0.5 DATA FLEX","INTERMEDIATE RING"]
-            for k, v in enumerate(r05_list):
-                print(f"For {v}, press {k}")
-            selection_3 = input("\ninput selection: ")
-            if int(selection_3) == 0 or int(selection_3) == 2:
-                N2 = 2
-            if int(selection_3) == 1:
-                N2 = 5
+            N2=3
         if int(selection_2) == 2:
-            N2 = 4
-    return N2
+            while True:
+                try:
+                    if code == "RF":
+                        N2 = 3
+                    if code == "PG":
+                        N2 = 4
+                    break
+                except ValueError:
+                    print("Invalid code. Try again.")
+
+    return N2, module_types[int(selection_2)]
 
 def get_flavor(comp_type):
     '''
@@ -257,7 +277,7 @@ def get_flavor(comp_type):
     if comp_type == "R0_DATA_FLEX":
         flavor_options = [1, 2, 3]
     if comp_type == "R05_DATA_FLEX":
-        flavor_options = [1, 2]
+        flavor_options = [1, 2, 3]
     if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     for k, v in enumerate(flavor_options):
@@ -274,7 +294,7 @@ def get_flavor(comp_type):
     return flavor
 
 
-def get_type(xxyy, N2):
+def get_type(xxyy, N2, module):
     code = xxyy[2:4]
     if str(code) == "DP" and N2 == 0:
         comp_type = "L0_BARREL_DATA_FLEX"
@@ -286,9 +306,9 @@ def get_type(xxyy, N2):
         comp_type = "L1_BARREL_POWER_FLEX"
     elif str(code) == "RF" and N2 == 2:
         comp_type = "INTERMEDIATE_RING"
-    elif str(code) == "RF" and N2 == 3:
+    elif str(code) == "RF" and N2 == 3 and module == "QUAD":
         comp_type = "QUAD_RING_R1"
-    elif str(code) == "RF" and N2 == 4:
+    elif str(code) == "RF" and N2 == 3 and module == "BOTH":
         comp_type = "COUPLED_RING_R01"
     elif str(code) == "PG" and N2 == 3:
         comp_type = "QUAD_MODULE_Z_RAY_FLEX"
