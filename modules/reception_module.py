@@ -221,7 +221,7 @@ def get_N2(xxyy,selection_1='',selection_2=''):
                         for k, v in enumerate(r05_list):
                             print(f"For {v}, press {k}")
                         selection_3 = input("\ninput selection: ")
-                        if int(selection_3) == 0 or int(selection_3) == 2:
+                        if int(selection_3) == 0:
                             N2 = 2
                         if int(selection_3) == 1:
                             N2 = 5
@@ -238,7 +238,7 @@ def get_N2(xxyy,selection_1='',selection_2=''):
             while True:
                 try:
                     if code == "RF":
-                        N2 = 3
+                        N2 = 4
                     if code == "PG":
                         N2 = 4
                     break
@@ -271,13 +271,13 @@ def get_flavor(comp_type):
     if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     if comp_type == "R0_POWER_JUMPER":
-        flavor_options = [0]
+        flavor_options = [7]
     if comp_type == "R0_POWER_T":
-        flavor_options = [0]
+        flavor_options = [6]
     if comp_type == "R0_DATA_FLEX":
-        flavor_options = [1, 2, 3]
+        flavor_options = [0, 1, 2]
     if comp_type == "R05_DATA_FLEX":
-        flavor_options = [1, 2, 3]
+        flavor_options = [3, 4, 5]
     if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     for k, v in enumerate(flavor_options):
@@ -306,9 +306,9 @@ def get_type(xxyy, N2, module):
         comp_type = "L1_BARREL_POWER_FLEX"
     elif str(code) == "RF" and N2 == 2:
         comp_type = "INTERMEDIATE_RING"
-    elif str(code) == "RF" and N2 == 3 and module == "QUAD":
+    elif str(code) == "RF" and N2 == 3:
         comp_type = "QUAD_RING_R1"
-    elif str(code) == "RF" and N2 == 3 and module == "BOTH":
+    elif str(code) == "RF" and N2 == 4:
         comp_type = "COUPLED_RING_R01"
     elif str(code) == "PG" and N2 == 3:
         comp_type = "QUAD_MODULE_Z_RAY_FLEX"
