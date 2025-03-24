@@ -85,7 +85,7 @@ def create_excel(serialNumbers,alternative_serials):
     print("Excel workbook created and serial numbers added.")
 
 def get_component_type():
-    comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY", "PPO"]
+    comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY FLEX", "TYPE-0 to PP0"]
     print("Select a component type.\n")
     for k, v in enumerate(comp_names):
         print(f"For {v}, press {k}")
@@ -103,29 +103,25 @@ def get_component_type():
 def get_code_and_function(component):
     '''
     Based on component selection, this function returns the XXYY code for the serial number and the function attribute of the component.
-    TODO: finish the function attribute for all components
     '''
 
-    if "PP0" in component:
-        #code_prefix = "PP"
-        code_suffix = "PG"
-    else:
-        code_prefix = "PI"
+ 
+    code_prefix = "PI"
 
-        if "DATA" in component:
-            code_suffix = "DP"
+    if "DATA" in component:
+            code_suffix = "PG"
             function = "D"
-        elif "POWER" in component:
+    elif "POWER" in component:
             code_suffix = "PP"
             function = "P"
-        elif "RING" in component:
+    elif "RING" in component:
             code_suffix = "RF"
             function = "R"
-        elif "Z-RAY" in component:
+    elif "Z-RAY FLEX" in component:
             code_suffix = "PG"
-        elif "PPO" in component:
+    elif "TYPE-0 to PP0" in component:
             code_suffix = "PG"
-        else:
+    else:
             code_suffix = None
     xxyy = str(code_prefix) + str(code_suffix)
     return xxyy
@@ -173,7 +169,7 @@ def get_N2(xxyy,selection_1='',selection_2=''):
     Returns N2
     '''
     code = xxyy[2:4]
-    placement_options = ["BARREL", "Endcap"]
+    placement_options = ["BARREL", "ENDCAP"]
     module_types = ["TRIPLET", "QUAD", "BOTH"]
     if selection_1 == '' and selection_2 == '':
         print("Select Component Placement.")
@@ -216,7 +212,7 @@ def get_N2(xxyy,selection_1='',selection_2=''):
         if int(selection_2) == 0:
             while True:
                 try:
-                    if code == "DP":
+                    if code == "PG":
                         r05_list = ["R0 DATA FLEX","R0.5 DATA FLEX"]
                         for k, v in enumerate(r05_list):
                             print(f"For {v}, press {k}")
@@ -224,23 +220,23 @@ def get_N2(xxyy,selection_1='',selection_2=''):
                         if int(selection_3) == 0:
                             N2 = 2
                         if int(selection_3) == 1:
-                            N2 = 5
+                            N2 = 3
                     if code == "PP":
-                        N2 = 2
+                        N2 = 5
                     if code == "RF":
-                        N2 = 2
+                        N2 = 3
                     break
                 except ValueError:
                     print("Invalid code. Try again.")
         if int(selection_2) == 1:
-            N2=3
+            N2=4
         if int(selection_2) == 2:
             while True:
                 try:
                     if code == "RF":
-                        N2 = 4
+                        N2 = 5
                     if code == "PG":
-                        N2 = 4
+                        N2 = 5
                     break
                 except ValueError:
                     print("Invalid code. Try again.")
@@ -268,16 +264,14 @@ def get_flavor(comp_type):
         flavor_options = [0]
     if comp_type == "QUAD_MODULE_Z_RAY_FLEX":
         flavor_options = [0]
-    if comp_type == "TYPE0_TO_PP0":
-        flavor_options = [1, 2]
     if comp_type == "R0_POWER_JUMPER":
-        flavor_options = [7]
+        flavor_options = [2]
     if comp_type == "R0_POWER_T":
-        flavor_options = [6]
+        flavor_options = [1]
     if comp_type == "R0_DATA_FLEX":
-        flavor_options = [0, 1, 2]
+        flavor_options = [1, 2, 3]
     if comp_type == "R05_DATA_FLEX":
-        flavor_options = [3, 4, 5]
+        flavor_options = [1, 2]
     if comp_type == "TYPE0_TO_PP0":
         flavor_options = [1, 2]
     for k, v in enumerate(flavor_options):
@@ -296,23 +290,23 @@ def get_flavor(comp_type):
 
 def get_type(xxyy, N2, module):
     code = xxyy[2:4]
-    if str(code) == "DP" and N2 == 0:
+    if str(code) == "PG" and N2 == 0:
         comp_type = "L0_BARREL_DATA_FLEX"
     elif str(code)== "PP" and N2 == 0:
         comp_type = "L0_BARREL_POWER_FLEX"
-    elif str(code) == "DP" and N2 == 1:
+    elif str(code) == "PG" and N2 == 1:
         comp_type = "L1_BARREL_DATA_FLEX"
     elif str(code) == "PP" and N2 == 1:
         comp_type = "L1_BARREL_POWER_FLEX"
-    elif str(code) == "RF" and N2 == 2:
-        comp_type = "INTERMEDIATE_RING"
     elif str(code) == "RF" and N2 == 3:
-        comp_type = "QUAD_RING_R1"
+        comp_type = "INTERMEDIATE_RING"
     elif str(code) == "RF" and N2 == 4:
+        comp_type = "QUAD_RING_R1"
+    elif str(code) == "RF" and N2 == 5:
         comp_type = "COUPLED_RING_R01"
-    elif str(code) == "PG" and N2 == 3:
+    elif str(code) == "PG" and N2 == 4:
         comp_type = "QUAD_MODULE_Z_RAY_FLEX"
-    elif str(code) == "PP" and N2 == 2:
+    elif str(code) == "PP" and N2 == 5:
         print("Select Component which R0 type.")
         r0_options = ["R0_POWER_T","R0_POWER_JUMPER"]
         for k, v in enumerate(r0_options):
@@ -326,11 +320,11 @@ def get_type(xxyy, N2, module):
                 print("Invalid Input. Try again.")
         print(f"Selected {r0}\n")
         comp_type = r0
-    elif str(code) == "DP" and N2 == 2:
+    elif str(code) == "PG" and N2 == 2:
         comp_type = "R0_DATA_FLEX"
-    elif str(code) == "DP" and N2 == 5:
+    elif str(code) == "PG" and N2 == 3:
         comp_type = "R05_DATA_FLEX"
-    elif str(code) == "PG" and N2 == 4:
+    elif str(code) == "PG" and N2 == 5:
         comp_type = "TYPE0_TO_PP0"
     else:
         print("Your selection does not exist! Please retry.")
