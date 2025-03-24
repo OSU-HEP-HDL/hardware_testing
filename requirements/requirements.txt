@@ -3,7 +3,7 @@ numpy
 pandas
 itkdb==0.6.12
 itkdb[eos]
-itksn
+itksn==0.4.0
 openhtf
 PyQt6
 segno
