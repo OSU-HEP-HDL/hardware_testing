@@ -8,6 +8,7 @@ import json
 
 def upload_component(client,component, serialNumber,alternative_serial):
     ''' This is for a single component upload'''
+    ylist = ["y","yes","Y","YES"]
     if isinstance(serialNumber,str):
         ''' retrieve component template to save'''
         project = serialNumber[3]
@@ -40,7 +41,7 @@ def upload_component(client,component, serialNumber,alternative_serial):
         
         print("You are uploading a new", component,"with serial number", serialNumber, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
         answer = input("\nInput Selection: ")
-        if answer == "y" or answer == "yes":
+        if answer in ylist:
             print("Uploading new component...")
             client.post('registerComponent',json=new_component)
             print("Done!")
@@ -87,7 +88,7 @@ def upload_component(client,component, serialNumber,alternative_serial):
         print("You are uploading",str(len(serialNumber)),"new", component, "from",vendor_list[int(vendor)],", do you wish to continue? (y or n)")
         answer = input("\nInput Selection: ")
 
-        if answer == "y" or answer == "yes":
+        if answer in ylist:
             print("Uploading new components...")
             component_list = []
             for serial,alt in zip(serialNumber,alternative_serial):
@@ -174,6 +175,7 @@ def get_data(itkdb_client):
 
 
 def main():
+    ylist = ["y","yes","Y","YES"]
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
     meta_data = get_data(itkdb_client)
@@ -184,7 +186,7 @@ def main():
         upload_component_local(mongodb_client,component)
     print("Create excel of serial numbers?")
     ans = input("\nAnswer (y or n): ")
-    if ans == "y" or ans == "yes":
+    if ans in ylist:
         create_excel(meta_data[1],meta_data[2])
     else:
         print("Fin")

@@ -363,6 +363,8 @@ def update_test_type(client,mongo_client,meta_data,test_type):
 def upload_attachments(client,attch,meta_data,test_type):
    component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
 
+   ylist = ['y',"yes","Y","YES"]
+   nlist = ['n',"no","N","NO"]
    for x in component["tests"]:
       if x['code'] == test_type:
          numInsp = len(x["testRuns"])
@@ -408,7 +410,7 @@ def upload_attachments(client,attch,meta_data,test_type):
 
    print("You are about to upload",len(attachment_list), "attachments to " +test_type+" test with run number",numInsp,", do you want to continue? (y or n)")
    ans = input("Answer: ")
-   if str(ans) == "y" or str(ans) == "yes":
+   if str(ans) in ylist:
       for data, attachment in zip(data_list, attachment_list):
          client.post("createTestRunAttachment",data=data,files=attachment)
       print("Attachment(s) successfully uploaded!")
@@ -462,16 +464,18 @@ def enter_serial_numbers(single=False):
        in_serial = input("\nSerial Number: ")
        return in_serial
    
+   ylist = ['y',"yes","Y","YES"]
+   nlist = ['n',"no","N","NO"]
    
    while True:
         print("Are you entering a batch? (y or n)")
         answer = input("\nAnswer: ")
         try:
-            if answer == "n" or answer == "no":
+            if answer in nlist:
                 print("You are entering a single serial number. Please enter it. (20UXXYYN1N2N3nnnn)")
                 in_serial = input("\nSerial Number: ")
                 return in_serial
-            elif answer == "y" or answer == "yes":
+            elif answer in ylist:
                 print("Please enter the partial serial. (20UXXYYN1N2N3)")
                 partial_serial = input("\nPartial serial number: ")
                 print("How many are you deleting?")
@@ -498,9 +502,9 @@ def format_number(latest_serial,existing_serials,register):
     for serial in existing_serials:
         existing_serial_list.append(serial[10:14])
 
-    answers = ["n","y","no","yes"]
-    nol = ["n","no"]
-    yesl = ['y',"yes"]
+    answers = ["n","y","no","yes","N","Y","NO","YES"]
+    nlist = ["n","no","N","NO"]
+    ylist = ['y',"yes","Y","YES"]
     print("Are you entering a batch? (y or n)")
     while True:
         try:
@@ -510,7 +514,7 @@ def format_number(latest_serial,existing_serials,register):
             break
         except ValueError:
             print("Invalid answer. Only a y or n")
-    if answer in nol:
+    if answer in nlist:
         while True:
             try:
                 print("The latest number is:",latest_serial)
@@ -547,7 +551,7 @@ def format_number(latest_serial,existing_serials,register):
             except ValueError:
                 print("Invalid input. Please provide a valid number.")
     
-    if answer in yesl:
+    if answer in ylist:
         while True:
             try:
                 if register == True:
@@ -566,13 +570,13 @@ def format_number(latest_serial,existing_serials,register):
             ans = input("\nAnswer: ")
 
             try:
-                if ans == "yes" or ans == "y":
+                if ans in ylist:
                     if register == True:
                         start_num = latest_serial+1
                     if register == False: 
                         start_num = latest_serial
                     break
-                elif ans == "no" or ans == "n":
+                elif ans in nlist:
                     print("Starting from a different position, please enter starting position")
                     while True:    
                         start_number = input("\nStart Number: ")
