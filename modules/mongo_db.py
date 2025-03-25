@@ -23,6 +23,8 @@ def insert_property_names(component):
         type_combination = "ring-quad"
     elif int(comp_type_combination) == 4:
         type_combination = "ring-both"
+    elif int(comp_type_combination) == 5:
+        type_combination = "mixed"
     
     comp_vendor = component["properties"]["VENDOR"]
     if int(comp_vendor) == 0:
