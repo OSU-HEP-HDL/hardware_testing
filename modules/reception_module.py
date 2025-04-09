@@ -288,7 +288,7 @@ def get_flavor(comp_type):
     return flavor
 
 
-def get_type(xxyy, N2, module):
+def get_type(xxyy, N2):
     code = xxyy[2:4]
     if str(code) == "PG" and N2 == 0:
         comp_type = "L0_BARREL_DATA_FLEX"

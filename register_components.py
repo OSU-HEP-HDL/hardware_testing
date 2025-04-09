@@ -166,7 +166,7 @@ def get_data(itkdb_client):
     xxyy = get_code_and_function(comp_selection)
     production_status = get_production_status()
     N2, module = get_N2(xxyy)
-    comp_type = get_type(xxyy,N2, module)
+    comp_type = get_type(xxyy,N2)
     flavor = get_flavor(comp_type)
     atlas_serial = get_latest_serial(itkdb_client, xxyy, production_status, N2, flavor, register,comp_type)
     alternative_serial = get_alternative_serial(atlas_serial)
