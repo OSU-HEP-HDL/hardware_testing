@@ -1,6 +1,6 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type,check_file_size
-from modules.mongo_db import upload_results_locally,scp_transfer
+from modules.mongo_db import upload_results_locally,scp_transfer,curl_image
 import argparse
 
 
@@ -82,14 +82,20 @@ def upload_reception_results(client,meta_data,template):
   print("You are about to upload test results for the Visual Inspection test, are you sure? (y or n)")
   inp = input("\n")
   if inp == "y" or inp == "yes":
-     upload = True
+     upload , upload_to_db = True
      client.post("uploadTestRunResults",json = test_results)
      print("New test run successfully uploaded!")
   else:
-     upload = False
-     print("Results not posted!")
+     print("Do you want to upload the results locally? (y or n)")
+     inp = input("\n")
+     upload_to_db = False
+     if inp == "y" or inp == "yes":
+      upload = True
+     else: 
+      upload = False
+      print("Results not posted!")
    
-  return test_results, upload
+  return test_results, upload, upload_to_db
     
 def main():
     eos = check_file_size(args)
@@ -102,13 +108,14 @@ def main():
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
 
-    results, upload = upload_reception_results(itkdb_client,meta_data,template)
+    results, upload, upload_to_db = upload_reception_results(itkdb_client,meta_data,template)
     
-    if enquiry(args["images"]) and upload == True:
+    if enquiry(args["images"]) and upload_to_db == True:
       print("Image arguements included. Starting attachment upload.")
       upload_attachments(itkdb_client,args,meta_data,test_type)
-      image_path = scp_transfer(proxmox_auth,args,meta_data,test_type)
     if upload == True:
+      print("Uploading results to the local database")
+      image_path = curl_image(args,meta_data,test_type)
       results["File_Location"] = image_path
       upload_results_locally(mongodb_client,results,serial_number,test_type)
     else:

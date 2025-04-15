@@ -1,6 +1,8 @@
 import paramiko
 import os
 import stat
+import subprocess
+from pathlib import Path
 
 def insert_property_names(component):
 
@@ -43,7 +45,7 @@ def insert_property_names(component):
     return purpose, type_combination, vendor
 
 def upload_results_locally(client,results,serial_number,test_type):
-   print("Uploading test results locally...")
+   print("\nUploading test results locally...")
    db = client["local"]["itk_testing"]
    try:
        if db.find_one({"_id": serial_number}) is None:
@@ -148,3 +150,43 @@ def scp_transfer(proxmox_auth, args, meta_data,test_type):
        
     
     return total_remote_path
+
+
+
+def curl_image(args,meta_data,test_type, url="https://loopback.app.hep.okstate.edu:443/upload", verbose=True):
+    print("Uploading images to ",url)
+    """
+    Uploads an image to the given URL using curl.
+    
+    Args:
+        image_path (str or Path): Path to the image file.
+        url (str): The endpoint to POST the image to.
+        verbose (bool): If True, print curl's output.
+    
+    Returns:
+        int: The return code from curl (0 = success).
+    """
+    comp_info = meta_data["type"]+"%2F"+meta_data["serialNumber"]
+    remote_path = "/itk_testing%2F"+comp_info
+    nested_remote_path = remote_path + "%2F" + test_type
+
+    url = url + nested_remote_path
+    for arg_key, value in args.items():
+       key = arg_key
+   
+    for image in args[key]:
+        curl_command = [
+            "curl",
+            "-X", "POST", "-k",
+            url,
+            "-F", f"file=@./{image}"
+        ]
+    
+        result = subprocess.run(curl_command, capture_output=not verbose, text=True)
+    
+    if not verbose:
+        print(result.stdout)
+        if result.stderr:
+            print("stderr:", result.stderr)
+    nested_remote_path = nested_remote_path.replace("%2F","/")
+    return nested_remote_path

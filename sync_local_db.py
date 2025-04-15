@@ -36,10 +36,14 @@ def sync_local_db(itk_client,mongo_client,proxmox_auth):
         mongo_dict.append({'serialNumber': inv['serialNumber'],'type': inv['type']})
 
     # Convert lists to sets and find the symmetric difference
+    print("ITK length: ",len(itk_sn))
+    print("Mongo length: ",len(mongo_sn))
     unique_to_itk = set(itk_sn) - set(mongo_sn)
-
+    print("ITK: ",unique_to_itk)
+    print("\n space")
     # Find items unique to list2
     unique_to_mongo = set(mongo_sn) - set(itk_sn)
+    print("Mongo: ",unique_to_mongo)
     #print("mongo dictionary: ", mongo_dict)
     #print("Unique SN to Mongo: ",unique_to_mongo)
  
@@ -51,6 +55,7 @@ def sync_local_db(itk_client,mongo_client,proxmox_auth):
     #print("Items unique to MongoDB:", list(unique_to_mongo))
     
     unique_to_mongo = list(unique_to_mongo)
+    '''
     try:
         print("Deleting locally unique components...")
         if len(unique_to_mongo) is int(0):
@@ -63,7 +68,7 @@ def sync_local_db(itk_client,mongo_client,proxmox_auth):
         remove_component_proxmox(proxmox_auth,filtered_mongo_inv)
     except ValueError:
         print("Local database already synced!")
-
+    '''
     
 
 def remove_component_proxmox(proxmox_auth, comp_dict):
