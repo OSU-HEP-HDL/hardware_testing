@@ -3,15 +3,24 @@ import paramiko
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
 from modules.reception_module import get_comp_info
 from modules.mongo_db import insert_property_names, remove_remote_directory, check_directory_exists
+from pathlib import Path
+
+# Set up logging directory and file
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
+log_file = log_dir / "sync.log"
 
 # Configure logger
 logger = logging.getLogger("pixal.sync")
 logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-handler.setFormatter(formatter)
-logger.addHandler(handler)
 
+# File handler
+file_handler = logging.FileHandler(log_file)
+file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
+
+# Avoid duplicate handlers if rerun
+if not logger.handlers:
+    logger.addHandler(file_handler)
 
 def sync_local_db(itk_client, mongo_client):
     db = mongo_client["local"]["itk_testing"]
@@ -23,9 +32,12 @@ def sync_local_db(itk_client, mongo_client):
     }
 
     itk_existing_components = itk_client.get("listComponents", json=search_filter)
+    
     itk_sn = []
     for comp in itk_existing_components:
         if comp['state'] == 'deleted':
+            continue
+        if comp['serialNumber'] is None:
             continue
         itk_sn.append(comp['serialNumber'])
 
@@ -37,9 +49,9 @@ def sync_local_db(itk_client, mongo_client):
 
     unique_to_itk = set(itk_sn) - set(mongo_sn)
     unique_to_mongo = set(mongo_sn) - set(itk_sn)
-
-    logger.info(f"Total unique components to the production database: {unique_to_itk}")
-    logger.info(f"Total unique components to the local database: {unique_to_mongo}")
+    print(unique_to_itk)
+    #logger.info(f"Total unique components to the production database: {unique_to_itk}")
+    #logger.info(f"Total unique components to the local database: {unique_to_mongo}")
 
     if unique_to_itk:
         print("The production database and the local database are not synced.")
@@ -67,8 +79,11 @@ def sync_local_db(itk_client, mongo_client):
         if db.find_one({"_id": item}) is not None:
             logger.info(f"Component with serial number {item} already exists locally.")
             continue
-
+        if item is None:
+            continue
+        
         comp_info = get_comp_info(itk_client, item)
+        #print(comp_info)
         project = comp_info['serialNumber'][3]
         subproject = comp_info['serialNumber'][3:5]
 
@@ -100,7 +115,7 @@ def sync_local_db(itk_client, mongo_client):
         }
 
         logger.info(f"Updated component: {updated_component}")
-        # db.insert_one(updated_component)
+        db.insert_one(updated_component)
 
     logger.info("Components created locally successfully." if unique_to_itk else "No components to create locally.")
 
