@@ -437,8 +437,10 @@ def get_comp_info(client,serialNumber):
         "user": component["user"],
         "institution": component["institution"]["code"],
         "componentType": component["componentType"]["code"],
+        "currentStage": component["currentStage"]["code"],
         "type": component["type"]["code"],
-        "testTypes": test_list
+        "testTypes": test_list,
+        "properties": component["properties"]
     }
     
     return meta_data

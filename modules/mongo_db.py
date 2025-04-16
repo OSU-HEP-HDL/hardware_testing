@@ -5,16 +5,18 @@ import subprocess
 from pathlib import Path
 
 def insert_property_names(component):
-
-    comp_purpose = component["properties"]["PURPOSE"]
+    
+    comp_purpose = component["properties"][0]["value"]
     if int(comp_purpose) == 0:
-        purpose = "pre-production"
+        purpose = "prototype"
     elif int(comp_purpose) == 1:
+        purpose = "pre-production"
+    elif int(comp_purpose) == 2:
         purpose = "production"
     elif int(comp_purpose) == 9:
         purpose = "dummy"
     
-    comp_type_combination = component["properties"]["TYPE_COMBINATION"]
+    comp_type_combination = component["properties"][1]["value"]
     if int(comp_type_combination) == 0:
         type_combination = "barrel-triplet"
     elif int(comp_type_combination) == 1:
@@ -27,8 +29,10 @@ def insert_property_names(component):
         type_combination = "ring-both"
     elif int(comp_type_combination) == 5:
         type_combination = "mixed"
+
+    flavor = component["properties"][2]["value"]
     
-    comp_vendor = component["properties"]["VENDOR"]
+    comp_vendor = component["properties"][3]["value"]
     if int(comp_vendor) == 0:
         vendor = "Altaflex"
     elif int(comp_vendor) == 1:
@@ -42,7 +46,9 @@ def insert_property_names(component):
     elif int(comp_vendor) == 5:
         vendor = "Summit"
     
-    return purpose, type_combination, vendor
+    alternative_id = component["properties"][4]["value"]
+    
+    return purpose, type_combination, flavor, vendor, alternative_id
 
 def upload_results_locally(client,results,serial_number,test_type):
    print("\nUploading test results locally...")

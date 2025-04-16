@@ -117,11 +117,11 @@ def upload_component_local(client,component):
     ''' This is for a batch of components to upload locally'''
     if isinstance(component,list):
         for comp in component:
-            purpose,type_combination,vendor = insert_property_names(comp)
+            purpose, type_combination, flavor, vendor, alternative_id = insert_property_names(comp)
             updated_component = {
                 **comp,
                 'stage': 'RECEPTION',
-                'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor},
+                'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor,"FLAVOR":flavor, "VENDOR": vendor,"ALTERNATIVE_IDENTIFIER": alternative_id},
                 '_id': comp["serialNumber"]
             }
 
@@ -139,12 +139,12 @@ def upload_component_local(client,component):
     
     else:
         ''' Uploads a single component to local database '''
-        purpose,type_combination,vendor = insert_property_names(component)
+        purpose, type_combination, flavor, vendor, alternative_id = insert_property_names(component)
 
         updated_component = {
             **component,
             'stage': 'RECEPTION',
-            'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor},
+            'properties': {"PURPOSE": purpose, "TYPE_COMBINATION": type_combination, "VENDOR": vendor,"FLAVOR":flavor, "VENDOR": vendor,"ALTERNATIVE_IDENTIFIER": alternative_id},
             '_id': component["serialNumber"]
         }
         
