@@ -429,6 +429,7 @@ def get_comp_info(client,serialNumber):
         os.execv(sys.executable, ['python'] + sys.argv)
     test_types = client.get("listTestTypes",json={"project": component["project"]["code"], "componentType":component["componentType"]["code"]})
     test_list = []
+    
     for test_type in test_types:
         test_list.append(test_type["code"])
     meta_data = {
