@@ -1,5 +1,0 @@
-set()
-[{'id': '660b0b40d8d11a0035d2f9e9', 'code': 'VISUAL_INSPECTION', 'name': 'Visual Inspection', 'testRuns': [{'id': '67eafe13c7aa1e4ddbd7a03e', 'state': 'ready', 'stateTs': 
-'2025-03-31T20:41:55.995Z', 'stateUserIdentity': '4430-9948-1', 'runNumber': '1', 'passed': True, 'problems': False, 'date': '2025-03-31T20:41:00.000Z', 
-'stage': {'code': 'VISUAL_INSPECTION', 'name': 'Visual_Inspection', 'order': 0, 'initial': True, 'final': False, 'alternative': False}, 'institution': 
-{'id': '5dd83a8f79bc5c000a61a345', 'code': 'OSU', 'name': 'Oklahoma State University'}, 'cts': '2025-03-31T20:41:55.995Z'}]}]
