@@ -9,7 +9,7 @@ import datetime
 import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument("result pdf",help="PDF of signal integrity results.")
+parser.add_argument("pdf",help="PDF of signal integrity results.")
 args = vars(parser.parse_args())
 
 
@@ -61,8 +61,8 @@ def main():
     eos = True
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
-
-    if not enquiry(args["results"]):
+    print(args)
+    if not enquiry(args["pdf"]):
       print("No folder argument included! Exiting...")
       exit()
     attachment = args['pdf']

@@ -178,20 +178,18 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
 
     url = url + nested_remote_path
     
-    print("Uploading images to ",url)
+    for key, value in args.items():
+        files = value if isinstance(value, list) else [value]
 
-    for arg_key, value in args.items():
-       key = arg_key
-   
-    for image in args[key]:
-        curl_command = [
-            "curl",
-            "-X", "POST", "-k",
-            url,
-            "-F", f"file=@./{image}"
-        ]
-    
-        result = subprocess.run(curl_command, capture_output=not verbose, text=True)
+        for file_path in files:
+            print("Uploading file:", file_path)
+            curl_command = [
+                "curl", "-X", "POST", "-k",
+                url,
+                "-F", f"file=@{file_path}"
+            ]
+            
+            result = subprocess.run(curl_command, capture_output=not verbose, text=True)
     
     if not verbose:
         print(result.stdout)
