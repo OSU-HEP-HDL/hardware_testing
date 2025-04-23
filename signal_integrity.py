@@ -1,6 +1,7 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
-from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry,update_test_type,upload_attachments,check_file_size
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,update_test_type,upload_attachments
 from modules.mongo_db import upload_results_locally, curl_image_post
+from modules.utilities import enquiry
 import itkdb
 import shutil
 import argparse

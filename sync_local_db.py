@@ -1,6 +1,6 @@
 import logging
 import paramiko
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
 from modules.reception_module import get_comp_info, get_template
 from modules.mongo_db import insert_property_names, remove_remote_directory, check_directory_exists, upload_results_locally
 from pathlib import Path

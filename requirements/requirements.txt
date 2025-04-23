@@ -10,3 +10,4 @@ segno
 paramiko
 openpyxl
 cachecontrol==0.14.1
+reportlab

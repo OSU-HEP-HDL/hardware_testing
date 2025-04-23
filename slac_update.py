@@ -1,4 +1,4 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
 from modules.reception_module import update_test_type,enter_serial_numbers,get_comp_info
 
 

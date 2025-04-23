@@ -1,6 +1,7 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status,create_excel,check_sn, get_alternative_serial
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, get_alternative_serial
 from modules.mongo_db import insert_property_names
+from modules.utilities import check_sn, create_excel
 import datetime
 import json
 

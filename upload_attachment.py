@@ -1,6 +1,6 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
-from modules.reception_module import get_comp_info, enter_serial_numbers, check_file_size
-from modules.mongo_db import insert_property_names,scp_transfer,upload_results_locally
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
+from modules.reception_module import get_comp_info, enter_serial_numbers
+from modules.mongo_db import scp_transfer
 import itkdb
 import shutil
 import os
@@ -67,7 +67,7 @@ def upload_additional_attachments(client,attch,meta_data,test_type):
       print("Not uploading photos")
 
 def main():
-    eos = check_file_size(args)
+    eos = True
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
     proxmox_auth = authenticate_user_proxmox()

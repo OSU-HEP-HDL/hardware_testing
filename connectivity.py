@@ -1,14 +1,14 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from modules.reception_module import enter_serial_numbers, get_comp_info, get_template,enquiry,update_test_type,check_file_size
-from modules.mongo_db import upload_results_locally
-import itkdb
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.reception_module import enter_serial_numbers, get_comp_info, get_template, update_test_type, upload_attachments
+from modules.mongo_db import upload_results_locally, curl_image_post
+from modules.utilities import enquiry, csv_to_pdf
 import shutil
 import argparse
 import csv
 import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument("pdf",nargs="*",help="CIRRIS result PDF")
+parser.add_argument("file",nargs="*",help="CIRRIS result file. PDF or CSV")
 args = vars(parser.parse_args())
 
 def get_csv_results(args):
@@ -23,7 +23,7 @@ def get_csv_results(args):
   error_table = False
   measure_table =False
   
-  with open(args['csv'][0]) as csv_file:
+  with open(args['file'][0]) as csv_file:
     reader = csv.reader(csv_file)
     for row in reader:
       if not row: 
@@ -61,9 +61,19 @@ def get_csv_results(args):
           continue
         measure_results.append(row)
         
+  if "Failed" in str(result):
+    passed = False
+    hv_passed = False
+    lv_passed = False
+  else:
+    passed = True
+    hv_passed = True
+    lv_passed = None
 
   results = {
-    "result": result,
+    "PASSED": passed,
+    "HV_PASS": hv_passed,
+    "LV_PASS": lv_passed,
     "wire_resistance": wire_resistance,
     "short_test_resistance": short_test_resistance,
     "operator": operator,
@@ -87,45 +97,24 @@ def upload_connectivity_test(client,template,meta_data,results):
             runNumber = len(x["testRuns"])
       runNumber = str(runNumber + 1)
     
-    '''Clean up the empty spaces'''
-    error_results = []
-    for res in results["error_results"]:
-      if str(res) == ' ':
-        continue
-      error_results.append((res))
-      #print(res)
-    measure_results = []
-    for res in results["measure_results"]:
-      if str(res) == ' ':
-        continue
-      measure_results.append(str(res))
-
-    if str(results["result"]).strip() == "Failed":
-      result = False
-      problems = True
-    else:
-      result = True
+    if results["PASSED"] == True:
       problems = False
+    else:
+      problems = True
 
     test_results ={
      **template,
      'component': meta_data['serialNumber'],
      'institution': meta_data['institution'],
      'runNumber': runNumber,
-     'passed': result,
+     'passed': results['PASSED'],
      'problems': problems,
      'properties':{'OPERATOR': meta_data['user']['userIdentity'],
-                   'CABLE_NUMBER': int(results['cable_number']),
-                   'WIRE_RESISTANCE': results['wire_resistance'],
-                   'SHORT_TEST_RESISTANCE': results['short_test_resistance']},
-                   'results': { 'PASSED': result,
-                                'ERROR_DETAILS': error_results,
-                                'MEASURED_VALUES': measure_results
-                              }
+                   'results':{'PASSED': results['PASSED'], 'HV_PASS': results['HV_PASS'], 'LV_PASS': results['LV_PASS']},}
       }
                   
     print("You are about to upload test results for the HV Connectivity test, are you sure? (y or n)")
-    inp = input("\n")
+    inp = input("\nanswer:")
     if inp == "y" or inp == "yes":
       client.post("uploadTestRunResults",json = test_results)
       print("Connectivity test successfully uploaded!")
@@ -134,21 +123,86 @@ def upload_connectivity_test(client,template,meta_data,results):
     return test_results
 
 def main():
-    eos = check_file_size(args)
-    itkdb_client = authenticate_user_itkdb(eos)
-    mongodb_client = authenticate_user_mongodb()
-    if not enquiry(args["pdf"]):
-      print("No CSV included! Exiting...")
-      exit()
-    result_list = get_csv_results(args)
+    eos = True
     single = True
     test_type = "CONNECTIVITY"
+    itkdb_client = authenticate_user_itkdb(eos)
+    mongodb_client = authenticate_user_mongodb()
+    is_csv = False
+
+    if not enquiry(args["file"]):
+      print("No file included! Exiting...")
+      exit()
+
+    results = {}
+
+    if args["file"][0].endswith(".csv"):
+      print("CSV file detected")
+      is_csv = True
+      results = get_csv_results(args)
+
+    if args["file"][0].endswith(".pdf"):
+      print("Did the test pass? (y or n)")
+      ans = input("\nanswer: ")
+      if ans.lower() == "y" or ans.lower() == "yes":
+        passed = True
+      else:
+        passed = False
+      results["PASSED"] = passed
+      if passed == True:
+        
+        print("Did it run the HV test? (y or n)")
+        ans = input("\nanswer: ")
+        if ans.lower() == "y" or ans.lower() == "yes":
+          print("Did it pass the HV test? (y or n)")
+          ans = input("\nanswer: ")
+          if ans.lower() == "y" or ans.lower() == "yes":
+            hv_passed = True
+          else:
+            hv_passed = False
+        else:
+          hv_passed = None
+        
+        print("Did it run a LV test? (y or n)")
+        ans = input("\nanswer: ")
+        if ans.lower() == "y" or ans.lower() == "yes":
+          print("Did it pass the LV test? (y or n)")
+          ans = input("\nanswer: ")
+          if ans.lower() == "y" or ans.lower() == "yes":
+            lv_passed = True
+          else:
+            lv_passed = False
+        else:
+          lv_passed = None
+        
+      else:
+        hv_passed = None
+        lv_passed = None
+      results["LV_PASS"] = lv_passed
+      results["HV_PASS"] = hv_passed
+
     serial_number = enter_serial_numbers(single)
     meta_data = get_comp_info(itkdb_client,serial_number)
     template = get_template(itkdb_client,meta_data,test_type)
+
     update_test_type(itkdb_client,mongodb_client,meta_data,test_type)
-    test_results = upload_connectivity_test(itkdb_client,template,meta_data,result_list)
+
+    if is_csv == True:
+      print("Input is CSV. Converting to PDF...")
+      csv_to_pdf(args["file"][0])
+      print("PDF created!")
+      attachments_path = args["file"][0].replace(".csv",".pdf")
+    else:
+      attachments_path = args["file"][0]
+    
+    # Database upload
+    test_results = upload_connectivity_test(itkdb_client,template,meta_data,results)
+    upload_attachments(itkdb_client, attachments_path, meta_data, test_type)
+    
+    # Local upload
     upload_results_locally(mongodb_client,test_results,serial_number,test_type)
+    attachment = {"file": attachments_path}
+    curl_image_post(attachment,meta_data,test_type)
     
 
 if __name__ == '__main__':

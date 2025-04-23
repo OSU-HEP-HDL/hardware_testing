@@ -1,6 +1,7 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
-from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type,check_file_size
-from modules.mongo_db import upload_results_locally,scp_transfer,curl_image_post
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.reception_module import enter_serial_numbers,get_comp_info,get_template, upload_attachments
+from modules.mongo_db import upload_results_locally,curl_image_post
+from modules.utilities import enquiry
 import argparse
 
 
@@ -99,10 +100,9 @@ def upload_reception_results(client,meta_data,template):
   return test_results, upload, upload_to_db
     
 def main():
-    eos = check_file_size(args)
+    eos = True
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
-    proxmox_auth = authenticate_user_proxmox()
     single = True
     test_type = "VISUAL_INSPECTION"
     serial_number = enter_serial_numbers(single)

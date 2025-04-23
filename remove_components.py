@@ -1,6 +1,6 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
-from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, prepend, get_existing_serials, enter_serial_numbers, get_comp_info
-from modules.mongo_db import check_directory_exists, remove_remote_directory, curl_image_delete
+from modules.db_auth import authenticate_user_itkdb, authenticate_user_mongodb
+from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, get_existing_serials, enter_serial_numbers, get_comp_info
+from modules.mongo_db import curl_image_delete
 import datetime
 import json
 import paramiko
@@ -186,53 +186,6 @@ def get_serials_to_delete(client):
 
     return serial_number
     
-def remove_component_proxmox(proxmox_auth, serialNumber,meta_data):
-
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    host = proxmox_auth["host"]
-    port = proxmox_auth["port"]
-    user = proxmox_auth["user"]
-    password = proxmox_auth["password"]
-
-    # Connect to the server
-    ssh.connect(hostname=host, port=port, username=user, password=password)
-    
-
-    # Create an SFTP session
-    sftp = ssh.open_sftp()
-
-    if isinstance(serialNumber,str):
-        comp_info = meta_data["type"]+"/"+meta_data["serialNumber"]
-        remote_path = "/mnt/proxmox/images/itk_testing/"+comp_info
-        print("Deleting component on proxmox...")
-        exists = check_directory_exists(sftp, remote_path,serialNumber)
-        if exists == True:
-            remove_remote_directory(sftp,remote_path)
-            print("Deleted on proxmox successfully...")
-        elif exists == False:
-            exit
-
-    else:
-        print("Deleting component batch on proxmox...")
-        for serial, data in zip(serialNumber,meta_data):
-            comp_info = data["type"]+"/"+serial
-            remote_path = "/mnt/proxmox/images/itk_testing/"+comp_info
-            success = False
-            try:
-                exists = check_directory_exists(sftp, remote_path, serial)
-                if exists:
-                    remove_remote_directory(sftp,remote_path)
-                    success = True
-            except ValueError:
-                print("Component with serial number",serial,"not found on proxmox!")
-        if success:
-            print("Component batch deleted on proxmox successfully!")
-
-    # Close the SFTP session and SSH connection
-    sftp.close()
-    ssh.close()
 
 def get_meta_list(client,serial_number):
 
@@ -253,8 +206,6 @@ def main():
     remove_component(itkdb_client,serial_number)
     remove_component_locally(mongodb_client,serial_number)
     curl_image_delete(meta_data)
-
-
 
 
 if __name__ == '__main__':

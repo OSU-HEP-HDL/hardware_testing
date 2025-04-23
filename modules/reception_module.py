@@ -1,5 +1,5 @@
-from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb
-from openpyxl import Workbook
+from modules.utilities import prepend
+
 import itkdb
 import datetime
 import segno
@@ -7,61 +7,8 @@ import json
 import os
 import sys
 import shutil
-import itksn
 from pathlib import Path
 
-def prepend(list, str):
-    # Using format()
-    str += '{0}'
-    list = [str.format(i) for i in list]
-    return(list)
-
-## NOT USED
-def create_labels(meta_data):
-    qr_filename = str(json.loads(meta_data)["atlas_serial"]) + ".png"
-    qrcode = segno.make_qr(meta_data)
-
-    qrcode.save("labels/"+qr_filename)
-
-## NOT USED
-def print_labels():
-    pass
-
-def enquiry(list):
-    if len(list) == 0:
-        return 0
-    else:
-        return 1
-
-def check_file_size(args):
-    eos = True
-    '''
-    img_str = ["png","jpg","jpeg","pdf","eps","gif"]
-    for arg_key, value in args.items():
-        key = arg_key
-    for arg in args[key]:
-        size = os.path.getsize(arg)
-        for st in img_str:
-            if st in arg:
-                eos = True
-        if size > 64000:
-            eos = True
-    '''
-    return eos
-
-def check_sn(serialNumber):
-    try:
-        if isinstance(serialNumber, list):
-            result = [itksn.parse(serial.encode("utf-8")) for serial in serialNumber]
-        else:
-            result = itksn.parse(serialNumber.encode("utf-8"))
-            print(result)
-
-        print("Serial Numbers checked successfully!")
-        return result
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
 
 def get_alternative_serial(serial):
     if isinstance(serial, list):
@@ -75,15 +22,7 @@ def get_alternative_serial(serial):
 
     return alt_serial
 
-def create_excel(serialNumbers,alternative_serials):
-    wb = Workbook()
-    ws = wb.active
-    for idx, value in enumerate(serialNumbers, start=1):
-        ws.cell(row=idx, column=1, value=value)
-        ws.cell(row=idx, column=2, value=alternative_serials[idx-1])
-    wb.save("serialNumbers.xlsx")
 
-    print("Excel workbook created and serial numbers added.")
 
 def get_component_type():
     comp_names = ["DATA FLEX", "POWER FLEX", "RING", "Z-RAY FLEX", "TYPE-0 to PP0"]

@@ -182,7 +182,7 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
         files = value if isinstance(value, list) else [value]
 
         for file_path in files:
-            print("Uploading file:", file_path)
+            print("Uploading file to servers:", file_path)
             curl_command = [
                 "curl", "-X", "POST", "-k",
                 url,
