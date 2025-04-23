@@ -1,6 +1,6 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import get_type, get_latest_serial, get_code_and_function, get_flavor, get_N2, get_component_type, get_production_status, prepend, get_existing_serials, enter_serial_numbers, get_comp_info
-from modules.mongo_db import check_directory_exists, remove_remote_directory
+from modules.mongo_db import check_directory_exists, remove_remote_directory, curl_image_delete
 import datetime
 import json
 import paramiko
@@ -248,12 +248,11 @@ def get_meta_list(client,serial_number):
 def main():
     itkdb_client = authenticate_user_itkdb()
     mongodb_client = authenticate_user_mongodb()
-    proxmox_auth = authenticate_user_proxmox()
     serial_number = get_serials_to_delete(itkdb_client)
     meta_data = get_meta_list(itkdb_client,serial_number)
     remove_component(itkdb_client,serial_number)
     remove_component_locally(mongodb_client,serial_number)
-    remove_component_proxmox(proxmox_auth,serial_number,meta_data)
+    curl_image_delete(meta_data)
 
 
 

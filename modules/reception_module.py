@@ -8,6 +8,7 @@ import os
 import sys
 import shutil
 import itksn
+from pathlib import Path
 
 def prepend(list, str):
     # Using format()
@@ -360,62 +361,64 @@ def update_test_type(client,mongo_client,meta_data,test_type):
         }
         db.update_one({"_id": meta_data['serialNumber']},up_stage)
     
-def upload_attachments(client,attch,meta_data,test_type):
-   component = client.get("getComponent", json={"component": meta_data["serialNumber"]})  
 
-   ylist = ['y',"yes","Y","YES"]
-   nlist = ['n',"no","N","NO"]
-   for x in component["tests"]:
-      if x['code'] == test_type:
-         numInsp = len(x["testRuns"])
-         testRun = x["testRuns"]
+def upload_attachments(client, attachments_path, meta_data, test_type):
+    # Determine the component and test run
+    component = client.get("getComponent", json={"component": meta_data["serialNumber"]})
+    test_runs = next(
+        (test["testRuns"] for test in component["tests"] if test["code"] == test_type), []
+    )
+    
+    if not test_runs:
+        print(f"No test runs found for test type '{test_type}'.")
+        return
+    
+    latest_test_run_id = test_runs[-1]["id"]
 
-   # This is in case any argument is a in a different directory
-   altered_attch_list =[]
-   for arg_key, value in attch.items():
-       key = arg_key
-   if "/" in attch[key][0]:
-      for image in attch[key]:
-         g = image.split("/")
-         img_name = g[-1]
-         shutil.copy2(image, img_name)
-         altered_attch_list.append(img_name)
-   
-   attch_list = []
+    # Determine if path is a file or directory
+    attachments = []
+    altered_filenames = []
+    attachments_path = Path(attachments_path)
 
-   if "/" in attch[key][0]:
-      for atch in altered_attch_list:
-         shutil.copy(atch,itkdb.data)
-         attch_list.append(itkdb.data / atch)
-         os.remove(atch)
+    if attachments_path.is_file():
+        files = [attachments_path]
+    elif attachments_path.is_dir():
+        files = list(attachments_path.glob("*"))
+    else:
+        print("Invalid file or directory path.")
+        return
 
-   else:
-      for atch in attch[key]:
-         shutil.copy(atch,itkdb.data)
-         attch_list.append(itkdb.data / atch)
+    for file in files:
+        dest_path = Path(itkdb.data) / file.name
+        shutil.copy(file, dest_path)
+        attachments.append(dest_path)
+        altered_filenames.append(file.name)
 
-   data_list = []
-   for atch, title in zip(attch_list,altered_attch_list):
-      data_list.append({
-         "testRun": testRun[numInsp-1]["id"],
-         "title": title,
-         "description": "Attachment for"+test_type,
-         "type": "file",
-         "url": atch
-      })
+    # Prepare the data for upload
+    data_list = [
+        {
+            "testRun": latest_test_run_id,
+            "title": title,
+            "description": f"Attachment for {test_type}",
+            "type": "file",
+            "url": attachment,
+        }
+        for title, attachment in zip(altered_filenames, attachments)
+    ]
 
-   attachment_list = []
-   for atch in attch_list:
-      attachment_list.append({"data": (atch.name, atch.open("rb"), "image/csv")})
+    attachment_list = [
+        {"data": (file.name, file.open("rb"), "pdf/csv/jpg")} for file in attachments
+    ]
 
-   print("You are about to upload",len(attachment_list), "attachments to " +test_type+" test with run number",numInsp,", do you want to continue? (y or n)")
-   ans = input("Answer: ")
-   if str(ans) in ylist:
-      for data, attachment in zip(data_list, attachment_list):
-         client.post("createTestRunAttachment",data=data,files=attachment)
-      print("Attachment(s) successfully uploaded!")
-   else:
-      print("Not uploading photos")
+    print(f"You are about to upload {len(attachment_list)} attachment(s) to '{test_type}' test with run number {len(test_runs)}.")
+    ans = input("Do you want to continue? (y/n): ").strip().lower()
+    if ans in ["y", "yes"]:
+        for data, attachment in zip(data_list, attachment_list):
+            client.post("createTestRunAttachment", data=data, files=attachment)
+        print("Attachment(s) successfully uploaded!")
+    else:
+        print("Upload cancelled.")
+
 
 
 def get_comp_info(client,serialNumber):

@@ -1,6 +1,6 @@
 from modules.db_utils import authenticate_user_itkdb, authenticate_user_mongodb, authenticate_user_proxmox
 from modules.reception_module import enter_serial_numbers,get_comp_info,get_template,enquiry, upload_attachments, update_test_type,check_file_size
-from modules.mongo_db import upload_results_locally,scp_transfer,curl_image
+from modules.mongo_db import upload_results_locally,scp_transfer,curl_image_post
 import argparse
 
 
@@ -82,7 +82,8 @@ def upload_reception_results(client,meta_data,template):
   print("You are about to upload test results for the Visual Inspection test, are you sure? (y or n)")
   inp = input("\n")
   if inp == "y" or inp == "yes":
-     upload , upload_to_db = True
+     upload = True
+     upload_to_db = True
      client.post("uploadTestRunResults",json = test_results)
      print("New test run successfully uploaded!")
   else:
@@ -115,7 +116,7 @@ def main():
       upload_attachments(itkdb_client,args,meta_data,test_type)
     if upload == True:
       print("Uploading results to the local database")
-      image_path = curl_image(args,meta_data,test_type)
+      image_path = curl_image_post(args,meta_data,test_type)
       results["File_Location"] = image_path
       upload_results_locally(mongodb_client,results,serial_number,test_type)
     else:

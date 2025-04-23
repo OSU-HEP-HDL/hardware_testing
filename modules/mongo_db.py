@@ -159,8 +159,8 @@ def scp_transfer(proxmox_auth, args, meta_data,test_type):
 
 
 
-def curl_image(args,meta_data,test_type, url="https://loopback.app.hep.okstate.edu:443/upload", verbose=True):
-    print("Uploading images to ",url)
+def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okstate.edu:443/upload", verbose=True):
+    
     """
     Uploads an image to the given URL using curl.
     
@@ -172,11 +172,14 @@ def curl_image(args,meta_data,test_type, url="https://loopback.app.hep.okstate.e
     Returns:
         int: The return code from curl (0 = success).
     """
-    comp_info = meta_data["type"]+"%2F"+meta_data["serialNumber"]
-    remote_path = "/itk_testing%2F"+comp_info
-    nested_remote_path = remote_path + "%2F" + test_type
+    comp_info = meta_data["type"]+"/"+meta_data["serialNumber"]
+    remote_path = "/itk_testing/"+comp_info
+    nested_remote_path = remote_path + "/" + test_type
 
     url = url + nested_remote_path
+    
+    print("Uploading images to ",url)
+
     for arg_key, value in args.items():
        key = arg_key
    
@@ -194,5 +197,30 @@ def curl_image(args,meta_data,test_type, url="https://loopback.app.hep.okstate.e
         print(result.stdout)
         if result.stderr:
             print("stderr:", result.stderr)
-    nested_remote_path = nested_remote_path.replace("%2F","/")
+    
     return nested_remote_path
+
+def curl_image_delete(meta_data, url="https://loopback.app.hep.okstate.edu:443/upload?path=", verbose=True):
+    print("deleting component at ",url)
+ 
+    comp_info = meta_data["type"]+"/"+meta_data["serialNumber"]
+    remote_path = "itk_testing/"+comp_info
+
+    url = url + remote_path
+
+    print("deleting component at ",url)
+    
+    curl_command = [
+        "curl",
+        "-X", "DELETE", "-k",
+        url
+    ]
+    
+    result = subprocess.run(curl_command, capture_output=not verbose, text=True)
+    
+    if not verbose:
+        print(result.stdout)
+        if result.stderr:
+            print("stderr:", result.stderr)
+    #nested_remote_path = nested_remote_path.replace("%2F","/")
+    #return nested_remote_path

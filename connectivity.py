@@ -8,7 +8,7 @@ import csv
 import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument("csv",nargs="*",help="CIRRIS result CSV")
+parser.add_argument("pdf",nargs="*",help="CIRRIS result PDF")
 args = vars(parser.parse_args())
 
 def get_csv_results(args):
@@ -137,7 +137,7 @@ def main():
     eos = check_file_size(args)
     itkdb_client = authenticate_user_itkdb(eos)
     mongodb_client = authenticate_user_mongodb()
-    if not enquiry(args["csv"]):
+    if not enquiry(args["pdf"]):
       print("No CSV included! Exiting...")
       exit()
     result_list = get_csv_results(args)
