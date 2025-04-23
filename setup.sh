@@ -1,7 +1,7 @@
 #!/bin/bash
 # Exit on error
 set -e
-
+rm -f .env
 # Determine if the system is macOS
 IS_MAC=false
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -49,14 +49,14 @@ echo "📦 Installing requirements"
 pip install -r requirements/requirements.txt
 
 # Prompting for credentials
-prompt_input "Enter username: " USERNAME true
+prompt_input "Enter username: " INPUT_USERNAME false
 prompt_input "Enter password: " PASSWORD true
 prompt_input "Enter ITKDB_ACCESS_CODE1: " ITKDB_ACCESS_CODE1 true
 prompt_input "Enter ITKDB_ACCESS_CODE2: " ITKDB_ACCESS_CODE2 true
 
 # Create .env file
 {
-echo "USERNAME=$USERNAME"
+echo "USERNAME=$INPUT_USERNAME"
 echo "PASSWORD=$PASSWORD"
 echo "ITKDB_ACCESS_CODE1=$ITKDB_ACCESS_CODE1"
 echo "ITKDB_ACCESS_CODE2=$ITKDB_ACCESS_CODE2"
