@@ -1,10 +1,66 @@
-.env
-pyrightconfig.json
-__pycache__/*
-.webcache/*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+
+# Test file directory
+testFiles/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Pytest cache
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# macOS
 .DS_Store
-image.png
-testing/*
-results/
-labels/
-local_db.py
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment files
+.env
+.env.*
+
+# Local dev artifacts
+*.log
+*.sqlite3
+*.db
+*.bak
+*.tmp
+
+# System files
+Thumbs.db
+ehthumbs.db
+desktop.ini
