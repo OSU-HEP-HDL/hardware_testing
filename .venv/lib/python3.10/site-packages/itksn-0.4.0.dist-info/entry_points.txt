@@ -1,0 +1,2 @@
+[console_scripts]
+itksn = itksn.cli:app
