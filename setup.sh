@@ -49,7 +49,7 @@ echo "📦 Installing requirements"
 pip install -r requirements/requirements.txt
 
 # Prompting for credentials
-prompt_input "Enter username: " USERNAME false
+prompt_input "Enter username: " USERNAME true
 prompt_input "Enter password: " PASSWORD true
 prompt_input "Enter ITKDB_ACCESS_CODE1: " ITKDB_ACCESS_CODE1 true
 prompt_input "Enter ITKDB_ACCESS_CODE2: " ITKDB_ACCESS_CODE2 true
