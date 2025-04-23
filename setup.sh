@@ -1,11 +1,19 @@
 #!/bin/bash
-rm .env
-mkdir ./results
-mkdir ./labels
-source testing/bin/activate
+# Exit on error
+set -e
 
+echo "🔧 Creating virtual environment in .venv/"
+python3 -m venv .venv
+
+echo "🐍 Activating virtual environment"
+source .venv/bin/activate
+
+echo "⬆️  Upgrading pip"
+pip install --upgrade pip
+
+echo "📦 Installing requirements"
 pip install -r requirements/requirements.txt
-
+echo "source .venv/bin/activate"
 
 read -p "Enter username: " USERNAME 
 read -s -p "Enter password: " PASSWORD
