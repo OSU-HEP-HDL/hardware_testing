@@ -1,6 +1,8 @@
 #!/bin/bash
 # Exit on error
 set -e
+trap 'echo "⚠️  Script failed on line $LINENO"; read -p "Press enter to exit..."' ERR
+
 rm -f .env
 
 # Detect OS
