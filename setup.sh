@@ -2,19 +2,35 @@
 # Exit on error
 set -e
 rm -f .env
-# Determine if the system is macOS
-IS_MAC=false
-if [[ "$(uname)" == "Darwin" ]]; then
-    IS_MAC=true
-fi
 
+# Detect OS
+IS_MAC=false
+IS_WINDOWS=false
+
+case "$(uname -s)" in
+    Darwin)
+        IS_MAC=true
+        ;;
+    Linux)
+        # No change, assume normal Linux
+        ;;
+    MINGW*|MSYS*|CYGWIN*|Windows_NT)
+        IS_WINDOWS=true
+        ;;
+    *)
+        echo "Unsupported OS: $(uname -s)"
+        exit 1
+        ;;
+esac
+
+# Function to prompt for input
 prompt_input() {
     local prompt="$1"
     local varname="$2"
     local silent="$3"
 
-    if $IS_MAC; then
-        # macOS fallback (no -p or -s support)
+    if $IS_MAC || $IS_WINDOWS; then
+        # macOS or Windows bash fallback (no reliable -p or -s support)
         if [[ "$silent" == "true" ]]; then
             echo -n "$prompt"
             stty -echo
@@ -26,7 +42,7 @@ prompt_input() {
             read "$varname"
         fi
     else
-        # Modern Bash (Linux or newer Bash on macOS)
+        # Modern Linux
         if [[ "$silent" == "true" ]]; then
             read -s -p "$prompt" "$varname"
             echo ""
@@ -40,7 +56,11 @@ echo "🔧 Creating virtual environment in .venv/"
 python3 -m venv .venv
 
 echo "🐍 Activating virtual environment"
-source .venv/bin/activate
+if $IS_WINDOWS; then
+    source .venv/Scripts/activate
+else
+    source .venv/bin/activate
+fi
 
 echo "⬆️  Upgrading pip"
 pip install --upgrade pip
@@ -71,3 +91,5 @@ echo "LOCAL_PROXMOX_USER=\"smb\""
 echo "LOCAL_PROXMOX_PASSWORD=\"osuhep\""
 echo "LOCAL_PROXMOX_PORT=\"22\""
 } >> .env
+
+echo "✅ Setup complete!"
