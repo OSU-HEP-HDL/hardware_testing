@@ -55,7 +55,7 @@ prompt_input() {
 }
 
 echo "🔧 Creating virtual environment in .venv/"
-python3 -m venv .venv
+python -m venv .venv
 
 echo "🐍 Activating virtual environment"
 if $IS_WINDOWS; then
