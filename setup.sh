@@ -63,7 +63,7 @@ else
 fi
 
 echo "⬆️  Upgrading pip"
-pip install --upgrade pip
+python -m pip install --upgrade pip
 
 echo "📦 Installing requirements"
 pip install -r requirements/requirements.txt
