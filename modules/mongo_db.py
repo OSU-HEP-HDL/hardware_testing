@@ -5,8 +5,14 @@ import subprocess
 from pathlib import Path
 
 def insert_property_names(component):
-    
-    comp_purpose = component["properties"][0]["value"]
+
+    register = False
+    try:
+        comp_purpose = component["properties"][0]["value"]
+    except KeyError as e:
+        register = True
+        comp_purpose = component["properties"]["PURPOSE"]
+
     if int(comp_purpose) == 0:
         purpose = "prototype"
     elif int(comp_purpose) == 1:
@@ -16,7 +22,11 @@ def insert_property_names(component):
     elif int(comp_purpose) == 9:
         purpose = "dummy"
     
-    comp_type_combination = component["properties"][1]["value"]
+    if register:
+        comp_type_combination = component["properties"]["TYPE_COMBINATION"]
+    else:
+        comp_type_combination = component["properties"][1]["value"]
+    
     if int(comp_type_combination) == 0:
         type_combination = "barrel-triplet"
     elif int(comp_type_combination) == 1:
@@ -30,9 +40,16 @@ def insert_property_names(component):
     elif int(comp_type_combination) == 5:
         type_combination = "mixed"
 
-    flavor = component["properties"][2]["value"]
+    if register:
+        flavor = component["properties"]["FLAVOR"]
+    else:
+        flavor = component["properties"][2]["value"]
     
-    comp_vendor = component["properties"][3]["value"]
+    if register:
+        comp_vendor = component["properties"]["VENDOR"]
+    else:
+        comp_vendor = component["properties"][3]["value"]
+    
     if int(comp_vendor) == 0:
         vendor = "Altaflex"
     elif int(comp_vendor) == 1:
@@ -46,7 +63,10 @@ def insert_property_names(component):
     elif int(comp_vendor) == 5:
         vendor = "Summit"
     
-    alternative_id = component["properties"][4]["value"]
+    if register:
+       alternative_id = component["properties"]["ALTERNATIVE_IDENTIFIER"]
+    else:
+        alternative_id = component["properties"][4]["value"]
     
     return purpose, type_combination, flavor, vendor, alternative_id
 

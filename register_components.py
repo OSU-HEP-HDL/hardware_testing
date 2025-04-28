@@ -183,6 +183,7 @@ def main():
     check = check_sn(meta_data[1])
  
     component,local = upload_component(itkdb_client,meta_data[0],meta_data[1],meta_data[2])
+    print(component)
     if local == True:
         upload_component_local(mongodb_client,component)
     print("Create excel of serial numbers?")
