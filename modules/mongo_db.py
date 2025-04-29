@@ -192,24 +192,40 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
     Returns:
         int: The return code from curl (0 = success).
     """
+    query_string = "?subdir="
     comp_info = meta_data["type"]+"/"+meta_data["serialNumber"]
     remote_path = "/itk_testing/"+comp_info
     nested_remote_path = remote_path + "/" + test_type
 
-    url = url + nested_remote_path
+    url = url + query_string + nested_remote_path
     
     for key, value in args.items():
         files = value if isinstance(value, list) else [value]
 
         for file_path in files:
-            print("Uploading file to servers:", file_path)
-            curl_command = [
-                "curl", "-X", "POST", "-k",
-                url,
-                "-F", f"file=@{file_path}"
-            ]
-            
-            result = subprocess.run(curl_command, capture_output=not verbose, text=True)
+            file_path = Path(file_path)
+
+            # 🧠 Check if it's a directory
+            if file_path.is_dir():
+                # If it's a folder, loop through all files inside
+                for inner_file in file_path.glob('*'):
+                    if inner_file.is_file():  # Only upload actual files
+                        print("\nUploading file to server:", inner_file)
+                        curl_command = [
+                            "curl", "-X", "POST", "-k",
+                            url,
+                            "-F", f"file=@{inner_file}"
+                        ]
+                        result = subprocess.run(curl_command, capture_output=not verbose, text=True)
+            else:
+                # It's a single file
+                print("Uploading file to server:", file_path)
+                curl_command = [
+                    "curl", "-X", "POST", "-k",
+                    url,
+                    "-F", f"file=@{file_path}"
+                ]
+                result = subprocess.run(curl_command, capture_output=not verbose, text=True)
     
     if not verbose:
         print(result.stdout)

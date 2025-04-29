@@ -111,9 +111,9 @@ def main():
 
     results, upload, upload_to_db = upload_reception_results(itkdb_client,meta_data,template)
     
-    if enquiry(args["images"]) and upload_to_db == True:
+    if enquiry(args["images"][0]) and upload_to_db == True:
       print("Image arguements included. Starting attachment upload.")
-      upload_attachments(itkdb_client,args,meta_data,test_type)
+      upload_attachments(itkdb_client,args['images'][0],meta_data,test_type)
     if upload == True:
       print("Uploading results to the local database")
       image_path = curl_image_post(args,meta_data,test_type)

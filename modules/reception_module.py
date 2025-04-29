@@ -318,7 +318,6 @@ def upload_attachments(client, attachments_path, meta_data, test_type):
     attachments = []
     altered_filenames = []
     attachments_path = Path(attachments_path)
-
     if attachments_path.is_file():
         files = [attachments_path]
     elif attachments_path.is_dir():
