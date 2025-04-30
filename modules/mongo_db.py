@@ -179,7 +179,7 @@ def scp_transfer(proxmox_auth, args, meta_data,test_type):
 
 
 
-def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okstate.edu:443/upload", verbose=True):
+def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okstate.edu:443/uploads", verbose=True):
     
     """
     Uploads an image to the given URL using curl.
@@ -234,13 +234,13 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
     
     return nested_remote_path
 
-def curl_image_delete(meta_data, url="https://loopback.app.hep.okstate.edu:443/upload?path=", verbose=True):
-    print("deleting component at ",url)
+def curl_image_delete(meta_data, url="https://loopback.app.hep.okstate.edu:443/upload", verbose=True):
  
     comp_info = meta_data["type"]+"/"+meta_data["serialNumber"]
     remote_path = "itk_testing/"+comp_info
 
-    url = url + remote_path
+    query = "?path="
+    url = url + query + remote_path
 
     print("deleting component at ",url)
     
