@@ -227,6 +227,44 @@ def get_flavor(comp_type):
 
     return flavor
 
+'''
+def get_type(serial_number):
+    xxyy = str(serial_number[3:7])
+    N2 = int(serial_number[8])
+    flavor = int(serial_number[9])
+    code = xxyy[2:4]
+
+    if str(code) == "PG" and N2 == 0:
+        comp_type = "L0_BARREL_DATA_FLEX"
+    elif str(code)== "PP" and N2 == 0:
+        comp_type = "L0_BARREL_POWER_FLEX"
+    elif str(code) == "PG" and N2 == 1:
+        comp_type = "L1_BARREL_DATA_FLEX"
+    elif str(code) == "PP" and N2 == 1:
+        comp_type = "L1_BARREL_POWER_FLEX"
+    elif str(code) == "RF" and N2 == 3:
+        comp_type = "INTERMEDIATE_RING"
+    elif str(code) == "RF" and N2 == 4:
+        comp_type = "QUAD_RING_R1"
+    elif str(code) == "RF" and N2 == 5:
+        comp_type = "COUPLED_RING_R01"
+    elif str(code) == "PG" and N2 == 4:
+        comp_type = "QUAD_MODULE_Z_RAY_FLEX"
+    elif str(code) == "PP" and N2 == 5 and flavor == 1:
+        comp_type = "R0_POWER_T"
+    elif str(code) == "PP" and N2 == 5 and flavor == 2:
+        comp_type = "R0_POWER_JUMPER"
+    elif str(code) == "PG" and N2 == 2:
+        comp_type = "R0_DATA_FLEX"
+    elif str(code) == "PG" and N2 == 3:
+        comp_type = "R05_DATA_FLEX"
+    elif str(code) == "PG" and N2 == 5:
+        comp_type = "TYPE0_TO_PP0"
+    else:
+        print("Your selection does not exist! Please retry.")
+        os.execv(sys.executable, ['python'] + sys.argv)
+    return comp_type
+'''
 
 def get_type(xxyy, N2):
     code = xxyy[2:4]
@@ -624,7 +662,6 @@ def get_latest_serial(client,xxyy, production_status, N2, flavor, register,comp_
     prod_status = 3 if int(production_status) == 9 else int(production_status)
     status = status_list[prod_status]
 
-    #comp_type = get_type(xxyy,N2)
     print("The component type you're entering is:", comp_type)
     print("Searching production database for this type...")
     search_filter = {

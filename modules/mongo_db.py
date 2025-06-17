@@ -216,6 +216,7 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
                             url,
                             "-F", f"file=@{inner_file}"
                         ]
+                        print(curl_command)
                         result = subprocess.run(curl_command, capture_output=not verbose, text=True)
             else:
                 # It's a single file
@@ -225,6 +226,7 @@ def curl_image_post(args,meta_data,test_type, url="https://loopback.app.hep.okst
                     url,
                     "-F", f"file=@{file_path}"
                 ]
+                
                 result = subprocess.run(curl_command, capture_output=not verbose, text=True)
     
     if not verbose:
