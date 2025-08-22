@@ -3,7 +3,11 @@ Tools for performing hardware tests and uploading to databases.
 
 In order to run these scripts, the user must have an account with the ITk database. https://itkpd-test.unicorncollege.cz/
 
-A tutorial on these scripts can be found at https://github.com/OSU-HEP-HDL/hardware_database_tutorial
+A tutorial on these scripts can be found at https://github.com/OSU-HEP-HDL/hardware_database_tutorial (out of date)
+
+[!IMPORTANT]
+If you're reading this for your onboarding task, follow these IMPORTANT alerts.
+
 # Setup
 It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
 
@@ -67,6 +71,9 @@ When prompted about the component number, there are two options:
 
 Once you answer the prompt on the vendor, your component(s) will be registered with the ITk database. 
 
+[!IMPORTANT]
+Most selections for component creation doesn't matter when making **Dummy** components. The **most** important one however is when prompted the type of componente (Prototype, Pre-Production, Production, Dummy). Ensure to hit **Dummy**. There are combindations that do not exist and will restart the script. To avoid this, I recommend just using most 0 selections. Do not enter a batch (say no to a batch). Just use the latest number that's listed when shown. Once the component is registered, copy the serial number as you will be asked to use it for the other scripts.
+
 ### Local Database
 The registering to the local database happens **automatically** after it successfully uploads to the ITk databse. This is to ensure both databases are synced up with the components. The script does parse through the local database to ensure there are no duplicates. 
 
@@ -79,6 +86,9 @@ This script takes the inspection images as arguements. This can be a single imag
 You'll be prompted to manually input a single serial number for the component you've tested. If the test is passed, the results and its images are uploaded to the ITk database. 
 
 If the component did not pass the test. You are asked for the reason, you can either manually enter this or choose from a list. If a common defect is not on the list, please tell me and I can add it. 
+
+[!IMPORTNAT]
+In the folder `/testFiles`, there are example results to upload to your dummy components. You can use these as arguments, `python visual_inspection.py testFiles/visualInsp`. Say yes to the component passing the test.
 
 ### Local Database
 The results are **automatically** uploaded to the local database. The local database used for the components uses MongoDB which does not work for images, **IN PROGRESS:** urls are uploaded in their place linking the file shared system that store these images. The test result can be found under the key {'tests':'VISUAL_INSPECTION'}
@@ -102,6 +112,9 @@ This script requires a csv produced by the CIRRUS tester as an argument. The dat
 
 Error Details and Measure Values are tables taken directly from the CIRRUS csv output.
 
+[!IMPORTANT]
+Just upload the pdf `python connectivity.py testFiles/connectivityFiles/l1_barrel_example.pdf`.
+
 ### Local Database
 The results are **automatically** uploaded to the local database and can be found under the local.itk_testing.'serialNumber'[{'tests': 'CONNECTIVITY_TEST'}]
 
@@ -110,31 +123,10 @@ To run the test:
 ```
 python signal_integrity.py results_folder/*
 ```
-This test requires a folder with the results from the signal integrity test. All files within this folder will be uploaded as attachments to the test. Currently, the desired parameters that are saved need to be saved by hand in a csv. To save the images to the test, just ensure that they are contained within the result folder.
+The results from the signal integrity test are now being combined and formatted into a pdf report. This pdf report will be uploaded as a result attachment to the component. An example of the report can be found within the `/testFiles/signalInt` folder.
 
-Data Structure:
-
-The data is structured in 2D arrays. The first dimension index refers to each differential pair and the second dimension are those pair's values. For example:
-```
-[[3.0,4.0,5.0,6.0],[3.1,4.1,5.1,6.1],[3.2,4.2,5.2,6.2]]
-```
-Here, the ```[3.0,4.0,5.0,6.0]``` refers to the first differential pair, ```[3.1,4.1,5.1,6.1]``` refers to the second, and so on. 
-Each value refers to a specific parameter as seen in the table.
-
-
-|                        | Differential Pair 1 | Differential Pair 2 | ... |
-| ---------------------- | ------------------- | ------------------- | --- |
-| **Measured Impedance** |          1.0        |          1.1        | ... |
-| **Designed Impedance** |          2.0        |          2.1        | ... |
-|     **Data Loss**      |                     |                     |     |
-|         0.5 GHz        |         3.0         |          3.1        | ... |
-|         1.0 GHz        |         4.0         |          4.1        | ... |
-|         1.5 GHz        |         5.0         |          5.1        | ... |
-|         2.0 GHz        |         6.0         |          6.1        | ... |
-| **Eye Diagram Values** |                     |                     |     |
-|        Jitter          |         7.0         |          7.1        | ... |
-|        Height          |         8.0         |          8.1        | ... |
-|        Width           |         9.0         |          9.1        | ... |
+[!IIMPORTANT]
+To upload the test results to your dummy component: `python signal_integrity.py testFiles/connectivityFiles/20UPIPG1400036_report.pdf`
 
 
 ### Local Database
@@ -156,6 +148,9 @@ To remove components, run:
 python remove_components.py
 ```
 This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
+
+[!IMPORTANT]
+When you successfully take your dummy component all the way through the testing process. Please remove it! :D
 
 #### Local Database
 Once components are removed from the ITk database, they are removed **automatically** from the local database to ensure both are synced with components. 
