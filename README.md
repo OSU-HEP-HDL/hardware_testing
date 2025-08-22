@@ -150,7 +150,7 @@ python remove_components.py
 This script can remove single components or batches of components. You can either manually enter the serial number(s) or go through the menu that the ```register_components.py``` offers. Prior to component(s) removal, it does parse through the ITk database to ensure all enquired components exist. 
 
 >[!IMPORTANT]
->When you successfully take your dummy component all the way through the testing process. Please remove it! :D
+>When you successfully take your dummy component all the way through the testing process. Please remove it! When prompted for the reason of deletion, just type "dummy" :D
 
 #### Local Database
 Once components are removed from the ITk database, they are removed **automatically** from the local database to ensure both are synced with components. 
