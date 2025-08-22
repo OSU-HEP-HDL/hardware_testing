@@ -6,7 +6,9 @@ In order to run these scripts, the user must have an account with the ITk databa
 A tutorial on these scripts can be found at https://github.com/OSU-HEP-HDL/hardware_database_tutorial (out of date)
 
 >[!IMPORTANT]
->If you're reading this for your onboarding task, follow these IMPORTANT alerts.
+>If you're reading this for your onboarding task, follow these IMPORTANT alerts. 
+>
+>The reason I'm having this process as an on boarding task is to give you some idea of the workflow that we, as a software team, are working on. These scripts have been editted and are used as the backbone of the UI and our ML projects are focused on increasing the efficiency of this testing process. 
 
 # Setup
 It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
