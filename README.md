@@ -87,7 +87,7 @@ You'll be prompted to manually input a single serial number for the component yo
 
 If the component did not pass the test. You are asked for the reason, you can either manually enter this or choose from a list. If a common defect is not on the list, please tell me and I can add it. 
 
->[!IMPORTNAT]
+>[!IMPORTANT]
 >In the folder `/testFiles`, there are example results to upload to your dummy components. You can use these as arguments, `python visual_inspection.py testFiles/visualInsp`. Say yes to the component passing the test.
 
 ### Local Database
@@ -125,7 +125,7 @@ python signal_integrity.py results_folder/*
 ```
 The results from the signal integrity test are now being combined and formatted into a pdf report. This pdf report will be uploaded as a result attachment to the component. An example of the report can be found within the `/testFiles/signalInt` folder.
 
->[!IIMPORTANT]
+>[!IMPORTANT]
 >To upload the test results to your dummy component: `python signal_integrity.py testFiles/connectivityFiles/20UPIPG1400036_report.pdf`
 
 
