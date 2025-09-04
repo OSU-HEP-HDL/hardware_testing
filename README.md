@@ -11,16 +11,9 @@ A tutorial on these scripts can be found at https://github.com/OSU-HEP-HDL/hardw
 >The reason I'm having this process as an onboarding task is to give you some idea of the workflow that we, as a software team, are working on. These scripts have been editted and are used as the backbone of the UI and our ML projects are focused on increasing the efficiency of this testing process. 
 
 # Setup
-It is recommended that you install the required libraries in a virtual environment such as [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
-
-To follow with this setup, create an environment called ```testing``` by running.
-(Some features of OpenHTF do not work in python>3.9.)
-```
-virtualenv testing --python 3.9
-```
+First, clone the main branch of this repository. The `setup.sh` script that's included will make a virtual environment with all the needed packages.
 
 Now using the startup script will activate your environment and ensure that the dependencies are installed.
-
 ```
 source setup.sh
 ```
